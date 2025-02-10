@@ -41,12 +41,12 @@ namespace SceneGraph {
 		rsd.depthWrite = false;
 		rsd.cullMode = Graphics::CULL_NONE;
 
-		m_tMat.Reset(r->CreateMaterial("unlit", desc, rsd));
+		m_tMat.Reset(r->CreateMaterial("thruster", desc, rsd));
 		m_tMat->SetTexture("texture0"_hash,
 			Graphics::TextureBuilder::Billboard(thrusterTextureFilename).GetOrCreateTexture(r, "billboard"));
 		m_tMat->diffuse = baseColor;
 
-		m_glowMat.Reset(r->CreateMaterial("unlit", desc, rsd));
+		m_glowMat.Reset(r->CreateMaterial("thruster", desc, rsd));
 		m_glowMat->SetTexture("texture0"_hash,
 			Graphics::TextureBuilder::Billboard(thrusterGlowTextureFilename).GetOrCreateTexture(r, "billboard"));
 		m_glowMat->diffuse = baseColor;
@@ -101,43 +101,27 @@ namespace SceneGraph {
 		}
 		if (power < 0.001f) return;
 		
-		// animate the thrust flame by making small changes in the material diffuse and alpha each frame
-		// the range of the change has to be kept small otherwise the flame flickers too much
-		// a random value between 0.9 and 1.0 works ok
-		// a large modulo value is used in order to get a good distribution of random changes 
-		const float thrust_flicker = ((rand() % 10001) + 90000) / 100000.0f;
-
-		m_tMat->diffuse = m_glowMat->diffuse = currentColor * power * thrust_flicker;
+		// animate the thrust flame using the thruster shader
+		// pass the power setting and flicker value using the material emissive
+		// emissive.a is the flicker value for the flame 
+		m_tMat->emissive.a = m_glowMat->emissive.a = (rand() % 255);
+		// emissive.r is the thruster power setting which effects flame length and brightness
+		m_tMat->emissive.r = m_glowMat->emissive.r = 255.0f * power;
+		
+		m_tMat->diffuse = m_glowMat->diffuse = currentColor;
 
 		//directional fade
 		vector3f cdir = vector3f(trans * -dir).Normalized();
 		vector3f vdir = vector3f(trans[2], trans[6], -trans[10]).Normalized();
 		// XXX check this for transition to new colors.
-		m_glowMat->diffuse.a = 255 * Easing::Circ::EaseIn(Clamp(vdir.Dot(cdir), 0.f, 1.f), 0.f, 1.f, 1.f);
-		m_tMat->diffuse.a = (255 - m_glowMat->diffuse.a) * thrust_flicker;
+		m_glowMat->diffuse.a = Easing::Circ::EaseIn(Clamp(vdir.Dot(cdir), 0.f, 1.f), 0.f, 1.f, 1.f) * 255;
+		m_tMat->diffuse.a = 255 - m_glowMat->diffuse.a;
 
 		Graphics::Renderer *r = GetRenderer();
 		if (!s_thrustMesh.Valid())
 			CreateThrusterGeometry(r);
 
-		matrix4x4f mod_trans = trans;
-
-		// make thruster flame expand and contract randomly each frame
-		// the range of the change has to be kept small otherwise the flame flickers too much
-		// a random value between 0.85 and 1.0 works ok
-		const float thrust_scale = ((rand() % 15001) + 85000) / 100000.0f;
-
-		// do fast scaling
-		// Warning: must apply the same scale change to all three axis of the transform
-		// since the transform includes the view
-		// the view direction will still effect the deformation of the flame but its
-		// not as noticeable if all three axis are affected the same
-		// Fixme: this should be done in the vertex shader before the model view transform is applied
-		mod_trans[0] *= thrust_scale;
-		mod_trans[5] *= thrust_scale;
-		mod_trans[10] *= thrust_scale;
-		
-		r->SetTransform(mod_trans);
+		r->SetTransform(trans);
 		r->DrawMesh(s_thrustMesh.Get(), m_tMat.Get());
 		r->DrawMesh(s_glowMesh.Get(), m_glowMat.Get());
 	}
