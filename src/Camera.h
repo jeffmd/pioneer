@@ -117,7 +117,7 @@ public:
 		bool operator<(const Shadow &other) const { return srad / lrad < other.srad / other.lrad; }
 	};
 
-	void CalcLighting(const Body *b, double &ambient, double &direct) const;
+	void CalcLighting(const Body *b, double &ambient, double &direct, Color &ambColor) const;
 	void CalcInteriorLighting(const Body* b, Color4ub &sLight, double &sFac) const;
 	void CalcShadows(const int lightNum, const Body *b, std::vector<Shadow> &shadowsOut) const;
 	float ShadowedIntensity(const int lightNum, const Body *b) const;

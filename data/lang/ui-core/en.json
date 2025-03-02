@@ -559,6 +559,14 @@
     "description": "tooltip description in settings menu",
     "message": "Display a 3D model of the pilot's cockpit. (Currently the dashboard is a placeholder)"
   },
+  "REALISTIC_SHADING": {
+    "description": "Game settings option: to use PBR shading on 3D models",
+    "message": "Enable realistic shading (EXPERIMENTAL)"
+  },
+  "REALISTIC_SHADING_DESC": {
+    "description": "tooltip description in settings menu",
+    "message": "use PBR shading to render all 3D models"
+  },
   "ENABLE_JOYSTICK": {
     "description": "",
     "message": "Enable joystick"

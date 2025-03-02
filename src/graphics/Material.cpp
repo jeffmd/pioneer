@@ -21,6 +21,7 @@ namespace Graphics {
 		lighting(false),
 		normalMap(false),
 		specularMap(false),
+		pbrMap(false),
 		usePatterns(false),
 		vertexColors(false),
 		instanced(false),
@@ -40,6 +41,7 @@ namespace Graphics {
 			a.lighting == b.lighting &&
 			a.normalMap == b.normalMap &&
 			a.specularMap == b.specularMap &&
+			a.pbrMap == b.pbrMap &&
 			a.usePatterns == b.usePatterns &&
 			a.vertexColors == b.vertexColors &&
 			a.instanced == b.instanced &&

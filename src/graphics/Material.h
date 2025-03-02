@@ -67,6 +67,7 @@ namespace Graphics {
 		bool lighting;
 		bool normalMap;
 		bool specularMap;
+		bool pbrMap; // roughness/metal/ao baked 
 		bool usePatterns; //pattern/color system
 		bool vertexColors;
 		bool instanced;

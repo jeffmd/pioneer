@@ -164,6 +164,7 @@ local function showVideoOptions()
 	}
 
 	local realisticScattering = Engine.GetRealisticScattering()
+	local realisticShading = Engine.GetRealisticShadingEnabled()
 
 	local cityDetail = keyOf(detailLabels,keyOf(detailLevels, Engine.GetCityDetailLevel()))-1
 	local displayNavTunnels = Engine.GetDisplayNavTunnels()
@@ -237,6 +238,7 @@ local function showVideoOptions()
 		Engine.SetCityDetailLevel(detail)
 	end
 
+	ui.columns(2,"visual_enhancements", false)
 	c,displayNavTunnels = checkbox(lui.DISPLAY_NAV_TUNNELS, displayNavTunnels, lui.DISPLAY_NAV_TUNNELS_DESC)
 	if c then
 		Engine.SetDisplayNavTunnels(displayNavTunnels)
@@ -252,10 +254,18 @@ local function showVideoOptions()
 		Engine.SetDisplayHudTrails(displayHudTrails)
 	end
 
+	ui.nextColumn()
 	c,enableCockpit = checkbox(lui.ENABLE_COCKPIT, enableCockpit, lui.ENABLE_COCKPIT_DESC)
 	if c then
 		Engine.SetCockpitEnabled(enableCockpit)
 	end
+
+	c,shading = checkbox(lui.REALISTIC_SHADING, shading, lui.REALISTIC_SHADING_DESC)
+	if c then
+		Engine.SetRealisticShadingEnabled(shading)
+	end
+
+	ui.columns(1,"",false)
 
 	c,starDensity = slider(lui.STAR_FIELD_DENSITY, starDensity, 0, 100)
 	if c then

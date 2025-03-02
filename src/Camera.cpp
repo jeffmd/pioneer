@@ -362,9 +362,9 @@ void Camera::Draw(const Body *excludeBody)
 //        as optical thickness increases the fraction of ambient light increases
 //        this takes altitude into account automatically
 //    * As suns set the split is biased towards ambient
-void Camera::CalcLighting(const Body *b, double &ambient, double &direct) const
+void Camera::CalcLighting(const Body *b, double &ambient, double &direct, Color &ambColor) const
 {
-	const double minAmbient = 0.05;
+	const double minAmbient = 0.10;
 	ambient = minAmbient;
 	direct = 1.0;
 
@@ -384,8 +384,8 @@ void Camera::CalcLighting(const Body *b, double &ambient, double &direct) const
 	double pressure, density;
 	planet->GetAtmosphericState(dist, &pressure, &density);
 	double surfaceDensity;
-	Color cl;
-	planet->GetSystemBody()->GetAtmosphereFlavor(&cl, &surfaceDensity);
+
+	planet->GetSystemBody()->GetAtmosphereFlavor(&ambColor, &surfaceDensity);
 
 	// approximate optical thickness fraction as fraction of density remaining relative to earths
 	double opticalThicknessFraction = density / EARTH_ATMOSPHERE_SURFACE_DENSITY;
@@ -449,9 +449,10 @@ void Camera::CalcLighting(const Body *b, double &ambient, double &direct) const
 	direct = (1.0 - fraction) * direct;
 
 	// scale ambient by amount of light
-	ambient = fraction * (Clamp((light), 0.0, 1.0)) * 0.25;
+	ambient = fraction * (Clamp((light), 0.0, 1.0));
 
 	ambient = std::max(minAmbient, ambient);
+
 }
 
 void Camera::CalcShadows(const int lightNum, const Body *b, std::vector<Shadow> &shadowsOut) const
@@ -580,11 +581,11 @@ void Camera::PrepareLighting(const Body *b, bool doAtmosphere, bool doInteriors)
 {
 	std::vector<float> lightIntensities;
 
-	double ambient = 0.05, direct = 1.0;
-	if (doAtmosphere)
-		CalcLighting(b, ambient, direct);
-
 	Color4ub ambientLightColor = Color::WHITE;
+	double ambient = 0.0, direct = 1.0;
+	if (doAtmosphere)
+		CalcLighting(b, ambient, direct, ambientLightColor);
+
 	Color4ub stationLightColor = Color::WHITE;
 	double stationFactor = 0.0;
 

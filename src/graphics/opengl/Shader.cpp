@@ -159,6 +159,8 @@ std::string Shader::GetProgramDefines(const MaterialDescriptor &desc)
 		ss << "#define MAP_NORMAL\n";
 	if (desc.specularMap)
 		ss << "#define MAP_SPECULAR\n";
+	if (desc.pbrMap)
+		ss << "#define MAP_PBR\n";
 	if (desc.glowMap)
 		ss << "#define MAP_EMISSIVE\n";
 	if (desc.ambientMap)

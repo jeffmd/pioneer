@@ -28,6 +28,7 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 	const std::string &glowTex = mdef.tex_glow;
 	const std::string &ambiTex = mdef.tex_ambi;
 	const std::string &normTex = mdef.tex_norm;
+	const std::string &pbrTex = mdef.tex_pbr;
 
 	Graphics::MaterialDescriptor matDesc;
 	matDesc.lighting = !mdef.unlit;
@@ -41,6 +42,7 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 	matDesc.glowMap = !glowTex.empty();
 	matDesc.ambientMap = !ambiTex.empty();
 	matDesc.normalMap = !normTex.empty();
+	matDesc.pbrMap = !pbrTex.empty();
 	matDesc.quality = Graphics::HAS_HEAT_GRADIENT;
 
 	// FIXME: add render state properties to MaterialDefinition
@@ -75,6 +77,9 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 		texture0 = Graphics::TextureBuilder::GetWhiteTexture(m_renderer);
 	if (!specTex.empty())
 		texture1 = Graphics::TextureBuilder::Model(specTex).GetOrCreateTexture(m_renderer, "model");
+	if (!pbrTex.empty())
+		// use spec slot for pbr texture
+		texture1 = Graphics::TextureBuilder::Model(pbrTex).GetOrCreateTexture(m_renderer, "model");
 	if (!glowTex.empty())
 		texture2 = Graphics::TextureBuilder::Model(glowTex).GetOrCreateTexture(m_renderer, "model");
 	if (!ambiTex.empty())

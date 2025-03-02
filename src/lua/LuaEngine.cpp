@@ -791,6 +791,22 @@ static int l_engine_set_gpu_jobs_enabled(lua_State *l)
 	return 0;
 }
 
+static int l_engine_get_realistic_shading_enabled(lua_State *l)
+{
+	lua_pushboolean(l, Pi::config->Int("EnableRealisticShading") != 0);
+	return 1;
+}
+
+static int l_engine_set_realistic_shading_enabled(lua_State *l)
+{
+	if (lua_isnone(l, 1))
+		return luaL_error(l, "SetRealistShadingEnabled takes one boolean argument");
+	const bool enabled = lua_toboolean(l, 1);
+	Pi::config->SetInt("EnableRealisticShading", (enabled ? 1 : 0));
+	Pi::config->Save();
+	return 0;
+}
+
 static int l_engine_get_realistic_scattering(lua_State *l)
 {
 	lua_pushinteger(l, Pi::config->Int("RealisticScattering"));
@@ -1117,6 +1133,9 @@ void LuaEngine::Register()
 
 		{ "GetGpuJobsEnabled", l_engine_get_gpu_jobs_enabled },
 		{ "SetGpuJobsEnabled", l_engine_set_gpu_jobs_enabled },
+
+		{ "GetRealisticShadingEnabled", l_engine_get_realistic_shading_enabled },
+		{ "SetRealisticShadingEnabled", l_engine_set_realistic_shading_enabled },
 
 		{ "GetRealisticScattering", l_engine_get_realistic_scattering },
 		{ "SetRealisticScattering", l_engine_set_realistic_scattering },

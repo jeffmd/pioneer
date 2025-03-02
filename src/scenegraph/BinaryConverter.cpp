@@ -326,6 +326,7 @@ void BinaryConverter::LoadMaterials(Serializer::Reader &rd)
 		m.tex_glow = rd.String();
 		m.tex_ambi = rd.String();
 		m.tex_norm = rd.String();
+		m.tex_pbr = rd.String();
 		m.diffuse = rd.Color4UB();
 		m.specular = rd.Color4UB();
 		m.ambient = rd.Color4UB();
