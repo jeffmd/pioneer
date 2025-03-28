@@ -28,6 +28,7 @@ public:
 	~ModelCache();
 	SceneGraph::Model *FindModel(const std::string &);
 	void Flush();
+	void OnChangeRealisticShading(const int enableRealisticShading);
 
 private:
 	typedef std::map<std::string, SceneGraph::Model *> ModelMap;

@@ -572,6 +572,7 @@ void StartupScreen::Start()
 
 	AddStep("new ModelCache", []() {
 		Pi::modelCache = new ModelCache(Pi::renderer);
+		Pi::modelCache->OnChangeRealisticShading(Pi::config->Int("EnableRealisticShading"));
 	});
 
 	AddStep("Shields::Init", []() {
@@ -855,6 +856,10 @@ void Pi::App::HandleRequests()
 
 			BaseSphere::OnChangeDetailLevel();
 		} break;
+		case InternalRequests::MODELSHADING_LEVEL_CHANGED: {
+			Pi::modelCache->OnChangeRealisticShading(Pi::config->Int("EnableRealisticShading"));
+		} break;
+
 		default:
 			Output("Pi::HandleRequests, unhandled request type %d processed.\n", int(request));
 			break;
@@ -1262,6 +1267,11 @@ bool Pi::SetView(const std::string& target)
 void Pi::OnChangeDetailLevel()
 {
 	Pi::GetApp()->internalRequests.push_back(App::InternalRequests::DETAIL_LEVEL_CHANGED);
+}
+
+void Pi::OnChangeModelShadingLevel()
+{
+	Pi::GetApp()->internalRequests.push_back(App::InternalRequests::MODELSHADING_LEVEL_CHANGED);
 }
 
 static void OnPlayerDockOrUndock()

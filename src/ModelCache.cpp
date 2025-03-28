@@ -15,6 +15,16 @@ ModelCache::~ModelCache()
 	Flush();
 }
 
+void ModelCache::OnChangeRealisticShading(const int enableRealisticShading)
+{
+	if (enableRealisticShading != 0) {
+		m_renderer->SetShaderUserDefines("multi", "#define USE_PBR\n");
+	}
+	else {
+		m_renderer->SetShaderUserDefines("multi", "");
+	}
+}
+
 SceneGraph::Model *ModelCache::FindModel(const std::string &name)
 {
 	ModelMap::iterator it = m_models.find(name);

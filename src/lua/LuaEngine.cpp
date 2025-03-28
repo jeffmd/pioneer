@@ -804,6 +804,7 @@ static int l_engine_set_realistic_shading_enabled(lua_State *l)
 	const bool enabled = lua_toboolean(l, 1);
 	Pi::config->SetInt("EnableRealisticShading", (enabled ? 1 : 0));
 	Pi::config->Save();
+	Pi::OnChangeModelShadingLevel();
 	return 0;
 }
 

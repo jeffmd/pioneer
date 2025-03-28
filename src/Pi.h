@@ -110,7 +110,8 @@ public:
 		enum class InternalRequests {
 			END_GAME = 0,
 			QUIT_GAME,
-			DETAIL_LEVEL_CHANGED // FIXME: right idea, wrong place
+			DETAIL_LEVEL_CHANGED, // FIXME: right idea, wrong place
+			MODELSHADING_LEVEL_CHANGED // FIXME: right idea, wrong place
 		};
 
 		std::vector<InternalRequests> internalRequests;
@@ -132,6 +133,7 @@ public:
 	static void RequestQuit();
 
 	static void OnChangeDetailLevel();
+	static void OnChangeModelShadingLevel();
 	static float GetFrameTime() { return frameTime; }
 	static float GetGameTickAlpha() { return gameTickAlpha; }
 	// for internal use, don't modify unless you know what you're doing
