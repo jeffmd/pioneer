@@ -6,6 +6,7 @@ use_patterns
 tex_diff molamola_diff.dds
 tex_glow molamola_glow.dds
 tex_spec molamola_spec.dds
+tex_norm molamola_norm.dds
 
 
 lod 300

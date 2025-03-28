@@ -6,6 +6,7 @@ use_patterns
 tex_diff station_diff.dds
 tex_glow station_glow.dds
 tex_spec station_spec.dds
+tex_norm station_norm.dds
 
 material Pipes
 diffuse 0.7 0.7 0.7
@@ -14,6 +15,7 @@ shininess 10
 tex_diff station_diff.dds
 tex_glow station_glow.dds
 tex_spec station_spec.dds
+tex_norm station_norm.dds
 
 material Tanks
 diffuse 1.0 1.0 1.0
@@ -22,6 +24,7 @@ shininess 40
 tex_diff station_diff.dds
 tex_glow station_glow.dds
 tex_spec station_spec.dds
+tex_norm station_norm.dds
 
 lod 1000
 mesh starport_docking.dae

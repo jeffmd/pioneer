@@ -5,6 +5,7 @@ use_patterns
 tex_diff nerodia_tex.dds
 tex_spec nerodia_spec.dds
 tex_glow nerodia_glow.dds
+tex_norm nerodia_norm.dds
 mesh nerodia.dae
 
 anim gear_down 1 80

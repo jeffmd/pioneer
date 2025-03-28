@@ -2,6 +2,7 @@ material Tower2
 tex_diff Tower2_D.dds
 tex_glow Tower2_G.dds
 tex_spec Tower2_S.dds
+tex_norm Tower2_N.dds
 diffuse 1.0 1.0 1.0
 specular 1.0 1.0 1.0
 shininess 70

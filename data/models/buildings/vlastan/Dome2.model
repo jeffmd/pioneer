@@ -2,6 +2,7 @@ material DefaultMaterial
 tex_diff Dome2_D.dds
 tex_glow Dome2_G.dds
 tex_spec Dome2_S.dds
+tex_norm Dome2_N.dds
 diffuse 1.0 1.0 1.0
 specular 0.8 0.8 0.8
 shininess 90

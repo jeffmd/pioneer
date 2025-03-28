@@ -2,6 +2,7 @@ material DefaultMaterial
 tex_diff Library_D.dds
 tex_glow Library_G.dds
 tex_spec Library_S.dds
+tex_norm Library_N.dds
 diffuse 1.0 1.0 1.0
 specular 0.8 0.8 0.8
 shininess 90
