@@ -4,7 +4,7 @@ specular 0.3 0.3 0.3
 shininess 40
 tex_diff coronatrix_diff.dds
 tex_spec coronatrix_spec.dds
-tex_norm coronatrix_norm2.png
+tex_norm coronatrix_norm.png
 tex_glow coronatrix_glow.dds
 use_patterns
 
@@ -15,7 +15,7 @@ shininess 120
 opacity 90
 tex_diff coronatrix_diff.dds
 tex_spec coronatrix_spec.dds
-tex_norm coronatrix_norm2.png
+tex_norm coronatrix_norm.png
 tex_glow coronatrix_glow.dds
 
 material Coronatrix-parts
