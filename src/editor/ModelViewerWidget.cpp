@@ -71,7 +71,7 @@ ModelViewerWidget::ModelViewerWidget(EditorApp *app) :
 	rsd.cullMode = Graphics::CULL_NONE;
 	rsd.primitiveType = Graphics::TRIANGLES;
 	m_bgMaterial.reset(m_renderer->CreateMaterial("vtxColor", desc, rsd));
-
+	m_renderer->SetAmbientColor(Color(50, 50, 50));
 	m_gridLines.reset(new Graphics::Drawables::GridLines(m_renderer));
 
 	m_options.showGrid = true;

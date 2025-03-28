@@ -31,7 +31,7 @@ Intro::Intro(Graphics::Renderer *r, int width, int height) :
 	using Graphics::Light;
 
 	RefreshBackground(r);
-	m_ambientColor = Color(10, 10, 15, 0);
+	m_ambientColor = Color(30, 30, 35, 0);
 
 	const Color one = Color::WHITE;
 	const Color two = Color(77, 77, 204, 0);
