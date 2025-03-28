@@ -93,6 +93,7 @@ namespace Graphics {
 		const RenderStateDesc &GetMaterialRenderState(const Graphics::Material *m) final { return static_cast<const Dummy::Material *>(m)->rsd; }
 
 		bool ReloadShaders() final { return true; }
+		void SetShaderUserDefines(const std::string &name, const std::string &defines) final { }
 
 	protected:
 		void PushState() final {}

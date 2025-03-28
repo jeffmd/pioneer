@@ -91,6 +91,7 @@ namespace Graphics {
 			const std::vector<BufferBindingData> &GetBufferBindings() const { return m_bufferBindingInfo; }
 
 			const std::string &GetString(size_t name) const { return m_nameMap.at(name); }
+			void SetUserDefines(const std::string &defines);
 
 		protected:
 			friend class Program;

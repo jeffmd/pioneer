@@ -118,7 +118,7 @@ void Shader::Reload()
 	// will require a program restart
 	for (auto &variant : m_variants) {
 		ProgramDef def = m_programDef;
-		def.defines = GetProgramDefines(variant.first);
+		def.defines += GetProgramDefines(variant.first);
 		variant.second->Reload(this, def);
 	}
 }
@@ -126,7 +126,7 @@ void Shader::Reload()
 Program *Shader::LoadProgram(const MaterialDescriptor &desc)
 {
 	ProgramDef def = m_programDef;
-	def.defines = GetProgramDefines(desc);
+	def.defines += GetProgramDefines(desc);
 
 	return new Program(this, def);
 }
@@ -294,4 +294,12 @@ BufferBindingData Shader::GetBufferBindingInfo(size_t name) const
 	if (data != nullptr) return *data;
 
 	return { 0, 0, InvalidBinding, 0 };
+}
+
+void Shader::SetUserDefines(const std::string &defines)
+{
+	if (m_programDef.defines.compare(defines) != 0) {
+		m_programDef.defines = defines;
+		Reload();
+	}
 }

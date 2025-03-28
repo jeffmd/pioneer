@@ -117,6 +117,7 @@ namespace Graphics {
 		OGL::RenderStateCache *GetStateCache() { return m_renderStateCache.get(); }
 
 		bool ReloadShaders() final;
+		void SetShaderUserDefines(const std::string &name, const std::string &defines) final;
 
 		bool Screendump(ScreendumpState &sd) final;
 
@@ -127,6 +128,7 @@ namespace Graphics {
 	protected:
 		void PushState() final{};
 		void PopState() final{};
+		OGL::Shader *GetShader(const std::string &shader);
 
 		size_t m_frameNum;
 

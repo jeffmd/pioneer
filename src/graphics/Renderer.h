@@ -182,6 +182,7 @@ namespace Graphics {
 		const TextureCache &GetTextureCache() { return m_textureCache; }
 
 		virtual bool ReloadShaders() = 0;
+		virtual void SetShaderUserDefines(const std::string &name, const std::string &defines) = 0;
 
 		// take a ticket representing the current renderer state. when the ticket
 		// is deleted, the renderer state is restored

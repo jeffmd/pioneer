@@ -1001,6 +1001,25 @@ namespace Graphics {
 		return true;
 	}
 
+	OGL::Shader *RendererOGL::GetShader(const std::string &shader)
+	{
+		OGL::Shader *s = nullptr;
+		for (auto &pair : m_shaders) {
+			if (pair.first == shader)
+				s = pair.second;
+		}
+
+		if (!s) {
+			s = new OGL::Shader(shader);
+			Log::Info("Created shader {} (address={})\n", shader, (void *)s);
+			CheckRenderErrors(__FUNCTION__, __LINE__);
+
+			m_shaders.push_back({ shader, s });
+		}
+
+		return s;
+	}
+
 	Material *RendererOGL::CreateMaterial(const std::string &shader, const MaterialDescriptor &d, const RenderStateDesc &stateDescriptor)
 	{
 		PROFILE_SCOPED()
@@ -1016,20 +1035,7 @@ namespace Graphics {
 		mat->m_descriptor = desc;
 		mat->m_renderStateHash = m_renderStateCache->InternRenderState(stateDescriptor);
 
-		OGL::Shader *s = nullptr;
-		for (auto &pair : m_shaders) {
-			if (pair.first == shader)
-				s = pair.second;
-		}
-
-		if (!s) {
-			s = new OGL::Shader(shader);
-			Log::Info("Created shader {} (address={})\n", shader, (void *)s);
-			CheckRenderErrors(__FUNCTION__, __LINE__);
-
-			m_shaders.push_back({ shader, s });
-		}
-
+		OGL::Shader *s = GetShader(shader);
 		mat->SetShader(s);
 		CheckRenderErrors(__FUNCTION__, __LINE__);
 		return mat;
@@ -1061,6 +1067,12 @@ namespace Graphics {
 		Log::Info("Done.\n");
 
 		return true;
+	}
+
+	void RendererOGL::SetShaderUserDefines(const std::string &name, const std::string &defines)
+	{
+		OGL::Shader *s = GetShader(name);
+		s->SetUserDefines(defines);
 	}
 
 	Texture *RendererOGL::CreateTexture(const TextureDescriptor &descriptor)
