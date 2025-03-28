@@ -260,7 +260,7 @@ local function showVideoOptions()
 		Engine.SetCockpitEnabled(enableCockpit)
 	end
 
-	c,shading = checkbox(lui.REALISTIC_SHADING, shading, lui.REALISTIC_SHADING_DESC)
+	c,shading = checkbox(lui.REALISTIC_SHADING, realisticShading, lui.REALISTIC_SHADING_DESC)
 	if c then
 		Engine.SetRealisticShadingEnabled(shading)
 	end
