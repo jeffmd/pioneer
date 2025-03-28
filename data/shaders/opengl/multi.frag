@@ -13,6 +13,8 @@ uniform sampler2D texture3; //ambient
 uniform sampler2D texture4; //pattern
 uniform sampler2D texture5; //color
 uniform sampler2D texture6; //normal
+uniform samplerCube texture7; //irradiance IBL
+
 in vec2 texCoord0;
 #endif
 
@@ -24,7 +26,7 @@ in vec3 eyePos;
 in vec3 normal;
 #ifdef MAP_NORMAL
 	in vec3 tangent;
-	in vec3 bitangent;
+	//in vec3 bitangent;
 #endif
 #ifdef HEAT_COLOURING
 	uniform sampler2D heatGradient;
@@ -62,11 +64,18 @@ void getSurface(inout Surface surf)
 	surf.specular = material.specular.xyz;
 
 #ifdef MAP_SPECULAR
-	float fxmap = texture(texture1, texCoord0).x;
-	surf.metallic = max(fxmap - 0.5, 0.0) * 2;
-	surf.roughness = (1.0 - (fxmap * surf.shininess * 0.01)) * 0.6;
+	vec3 fxmap = texture(texture1, texCoord0).rgb;
+#ifdef USE_PBR
+	// convert specular into metallic and roughness
+	// this is 
+	surf.metallic = fxmap.x * 0.3;
+	surf.roughness = (1.0 - fxmap.r) * 0.3 + 0.30;
+#else
+	surf.specular *= fxmap;
+#endif
 #endif
 
+#ifdef USE_PBR
 #ifdef MAP_PBR
 	vec3 pbrMap = texture(texture1, texCoord0).xyz;
 	// first channel (red) of pbr map is roughness of the material
@@ -75,12 +84,16 @@ void getSurface(inout Surface surf)
 	surf.metallic = pbrMap.g;
 #endif
     surf.specular = mix(vec3(0.04), surf.color.xyz, surf.metallic);
+#endif
 
 #if (NUM_LIGHTS > 0)
 //directional lighting
 #ifdef MAP_NORMAL
 	vec3 bump = (texture(texture6, texCoord0).xyz * 2.0) - vec3(1.0);
-	mat3 tangentFrame = mat3(tangent, bitangent, normal);
+	vec3 N = normalize(normal);
+	vec3 T = normalize(tangent);
+	vec3 bitangent = cross(N, T);
+	mat3 tangentFrame = mat3(T, bitangent, N);
 	surf.normal = tangentFrame * bump;
 #else
 	surf.normal = normal;
@@ -124,8 +137,10 @@ void main(void)
 #if (NUM_LIGHTS > 0)
 	// ambient only make sense with lighting
 	vec3 diffuse = scene.ambient.xyz;
+#ifdef USE_PBR
 	// add hemisphere lighting
 	diffuse *= FastHemiSphereLight(surface.normal);
+#endif
 
 	vec3 specular = vec3(0.0);
 	float intensity[4] = float[](
@@ -136,8 +151,11 @@ void main(void)
 	);
 
 	for (int i=0; i<NUM_LIGHTS; ++i) {
+#ifdef USE_PBR
 		PbrDirectionalLight(uLight[i], intensity[i], surface, eyePos, diffuse, specular);
-		//BlinnPhongDirectionalLight(uLight[i], intensity[i], surface, eyePos, diffuse, specular);
+#else
+		BlinnPhongDirectionalLight(uLight[i], intensity[i], surface, eyePos, diffuse, specular);
+#endif
 	}
 
 #if 0
@@ -152,15 +170,20 @@ void main(void)
 
 	SGaussian atmosphereLobe;
 	atmosphereLobe.Axis = mat3(uViewMatrix) * normalize(vec3(0, 1, 0.0));
-	atmosphereLobe.Amplitude = vec3(1.0, 1.0, 1.0) / vec3(10.0);
-	atmosphereLobe.Sharpness = 0.9;
+	atmosphereLobe.Amplitude = vec3(1.0, 1.0, 1.0) / vec3(5.0);
+	atmosphereLobe.Sharpness = 1;
 
 	vec3 brdf = vec3(1) / PI;
-	diffuse += brdf * max(SGInnerProduct(lightingLobe, cosineLobe), 0.0);
+	//diffuse += brdf * max(SGInnerProduct(lightingLobe, cosineLobe), 0.0);
 	diffuse += brdf * max(SGInnerProduct(atmosphereLobe, cosineLobe), 0.0);
 #endif
-	vec3 emissive = (vec3(1.0) - scene.ambient.xyz) * surface.emissive;
-	vec3 final_color = (diffuse * surface.color.xyz) * surface.ambientOcclusion + specular + emissive;
+
+	vec3 final_color = ((diffuse * surface.color.xyz) * surface.ambientOcclusion + specular);
+#ifdef USE_PBR
+	// gamma correction
+	//final_color *= (2.0 / PI);
+#endif
+	final_color += (vec3(1.0) - scene.ambient.xyz) * surface.emissive * 1.5;
 	frag_color = vec4(final_color, surface.color.w);
 
 #ifdef HEAT_COLOURING

@@ -12,6 +12,7 @@ Texture sampler2D texture3 name=ambient
 Texture sampler2D texture4 name=pattern
 Texture sampler2D texture5 name=color
 Texture sampler2D texture6 name=normal
+Texture samplerCube texture7 name=irradiance
 
 Texture sampler2D heatGradient
 
