@@ -73,40 +73,16 @@ struct Surface {
 	float metallic;
 };
 
-
-float FastHemiSphereLight(in vec3 normal)
-{
-	// normal must be in view space
-    float intensity = 0.0;
-
-	// use 6 lights that form a hemisphere orientated in view space
-	float right = normal.z + normal.x;
-	float left = normal.z - normal.x;
-
-    intensity += max(normal.y + right, 0.0); // front top right
-    intensity += max(normal.y + left, 0.0); // front top left
-    intensity += max(normal.y - left, 0.0); // back top right
-    intensity += max(normal.y - right, 0.0); // back top left
-    intensity += max(normal.y, 0.0); // top
-    intensity += max(normal.z, 0.0); // front
-    intensity += max(normal.x, 0.0); // right
-    intensity += max(-normal.x, 0.0); // left
-    intensity *= 0.4;
-
-	return intensity;
-}
-
 // controls specular reflection
 // normal distribution function
-float DistributionGGX(vec3 N, vec3 H, float a)
+float DistributionGGX(float NdotH, float a)
 {
 	float a2 = a * a;
 	a2 *= a2;
-	float NdotH = max(dot(N, H), 0.0);
-	float base = NdotH * NdotH * (a2 - 1.0) + 1.001;
+	float base = NdotH * NdotH * (a2 - 1.0) + 1.0001;
 	base = /*PI */ base * base;
 
-	return (a2 + 0.01) / base;
+	return (a2 + 0.001)/ base;
 }
 
 vec3 fresnelSchlick(float HdotV, vec3 F0)
@@ -124,42 +100,41 @@ float GeometrySchlickSmithGGX(float NdotL, float NdotV, float roughness)
     return /*(NdotV * NdotL)*/1.0 / (ggx1 * ggx2);
 }
 
-void PbrDirectionalLight(in Light light, in float intensity, in Surface surf, in vec3 fragPos, inout vec3 diffuse, inout vec3 specular)
+void PbrDirectionalLight(in Light light, in float intensity, in Surface surf, in vec3 V, inout vec3 diffuse, inout vec3 specular)
 {
 	// This code calculates directional lights
 	vec3 L = normalize(light.position.xyz); // surface->light vector
-	vec3 V = normalize(-fragPos); // surface->eye vector
 	vec3 H = normalize(L + V); // halfway vector
 	vec3 N = surf.normal;
 
-	vec3 specFresnel = fresnelSchlick(max(dot(H, V), 0.0), surf.specular);
+
+	float HdotV = max(dot(H, V), 0.001);
+	vec3 specFresnel = fresnelSchlick(HdotV, surf.specular);
 
 	// modified cook-torrance specular brdf
-	float D = DistributionGGX(N, H, surf.roughness);
-	float NdotL = max(dot(N, L), 0.0);
-	float NdotV = max(dot(N, V), 0.0);
+	float D = DistributionGGX(max(dot(N, H), 0.001), surf.roughness);
+	float NdotL = max(dot(N, L), 0.001);
+	float NdotV = max(dot(N, V), 0.001);
 	float G = GeometrySchlickSmithGGX(NdotL, NdotV, surf.roughness);
     vec3 DGF = D * G * specFresnel;
 	// add to outgoing specular radiance
-	float denom = 4.0 /* max(NdotL * NdotV, 0.01)*/;
-	specular += (DGF / denom) * light.specular.xyz * intensity * NdotL;
+	specular += DGF * 0.25 * light.specular.xyz * intensity * NdotL;
 
 	// fresnel effect for diffuse
 	vec3 kD = vec3(1.0) - specFresnel;
 	kD *= 1.0 - surf.metallic;
 	// add to outgoing diffuse radiance
-	diffuse += kD * light.diffuse.xyz * intensity * NdotL /* (1.0 / PI)*/;
+	diffuse += kD * light.diffuse.xyz * intensity * NdotL;// * (1.0 / PI);
 }
 
 // Currently used by: hopefully everything
 // Evaluates a standard blinn-phong diffuse+specular, with the addition of a
 // light intensity term to scale the lighting contribution based on (pre-calculated)
 // global occlusion
-void BlinnPhongDirectionalLight(in Light light, in float intensity, in Surface surf, in vec3 fragPos, inout vec3 diffuse, inout vec3 specular)
+void BlinnPhongDirectionalLight(in Light light, in float intensity, in Surface surf, in vec3 V, inout vec3 diffuse, inout vec3 specular)
 {
 	// This code calculates directional lights
 	vec3 L = normalize(light.position.xyz); // surface->light vector
-	vec3 V = normalize(-fragPos); // surface->eye vector
 	vec3 H = normalize(L + V); // halfway vector
 	diffuse += light.diffuse.xyz * intensity * max(dot(L, surf.normal), 0.0);
 	specular += surf.specular * light.specular.xyz * intensity * pow(max(dot(H, surf.normal), 0.0), surf.shininess);

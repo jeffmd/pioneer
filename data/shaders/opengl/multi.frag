@@ -68,8 +68,8 @@ void getSurface(inout Surface surf)
 #ifdef USE_PBR
 	// convert specular into metallic and roughness
 	// this is 
-	surf.metallic = fxmap.x * 0.3;
-	surf.roughness = (1.0 - fxmap.r) * 0.3 + 0.30;
+	surf.metallic = max(fxmap.x - 0.65, 0.0);
+	surf.roughness = (1.0 - fxmap.r) * (180.0 - material.shininess) / 180.0;
 #else
 	surf.specular *= fxmap;
 #endif
@@ -137,10 +137,32 @@ void main(void)
 #if (NUM_LIGHTS > 0)
 	// ambient only make sense with lighting
 	vec3 diffuse = scene.ambient.xyz;
+	vec3 ambient = diffuse;
+	vec3 V = normalize(-eyePos);
 #ifdef USE_PBR
 	// add hemisphere lighting
-	diffuse *= FastHemiSphereLight(surface.normal);
+	float aNdotV = max(dot(V, surface.normal) , 0.1);
+	vec3 aSpecFresnel = fresnelSchlick(aNdotV, surface.specular);
+	float aSpec = (1.0 - aNdotV);
+	float aG = GeometrySchlickSmithGGX(aNdotV, aNdotV, surface.roughness);
+	// for reflected light NdotH is always 1 but this produces to much specular
+	// limit NdotH to range 0.99 to 0.995
+	float aNdotH = 0.090 * aSpec + 0.905;
+	float aD = DistributionGGX(aNdotH, surface.roughness);
+	// add hemishpere specular at glancing angles
+	vec3 glassFresnel =  10.0 * aSpec * ambient * (1.0 - surface.color.a);
+	vec3 hemiSpec = 0.25 * (aNdotV * aSpecFresnel * ambient * aG * aD) + glassFresnel;
+
+	// fresnel and metal effect for hemi diffuse
+	diffuse *= (1.0 - aSpecFresnel) * (1.0 - surface.metallic);
+	// hemisphere diffuse  (multiple lights) 
+	// aSpec provides back lighting from left, right, bottom, and top
+	// aNdotV provides view orientated lighting
+	// surface.normal.y is light from above
+	diffuse *= (2.0 - aNdotV + max(surface.normal.y, 0.0));
+
 #endif
+	// fresnel effect for diffuse
 
 	vec3 specular = vec3(0.0);
 	float intensity[4] = float[](
@@ -152,9 +174,9 @@ void main(void)
 
 	for (int i=0; i<NUM_LIGHTS; ++i) {
 #ifdef USE_PBR
-		PbrDirectionalLight(uLight[i], intensity[i], surface, eyePos, diffuse, specular);
+		PbrDirectionalLight(uLight[i], intensity[i], surface, V, diffuse, specular);
 #else
-		BlinnPhongDirectionalLight(uLight[i], intensity[i], surface, eyePos, diffuse, specular);
+		BlinnPhongDirectionalLight(uLight[i], intensity[i], surface, V, diffuse, specular);
 #endif
 	}
 
@@ -178,11 +200,13 @@ void main(void)
 	diffuse += brdf * max(SGInnerProduct(atmosphereLobe, cosineLobe), 0.0);
 #endif
 
-	vec3 final_color = ((diffuse * surface.color.xyz) * surface.ambientOcclusion + specular);
+	vec3 final_color = (diffuse * surface.color.xyz) * surface.ambientOcclusion + specular;
 #ifdef USE_PBR
+	final_color += hemiSpec;
 	// gamma correction
-	//final_color *= (2.0 / PI);
+	final_color *= (2.6 / PI);
 #endif
+	// emmission
 	final_color += (vec3(1.0) - scene.ambient.xyz) * surface.emissive * 1.5;
 	frag_color = vec4(final_color, surface.color.w);
 
