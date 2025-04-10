@@ -141,6 +141,7 @@ void main(void)
 	vec3 V = normalize(-eyePos);
 #ifdef USE_PBR
 	// add hemisphere lighting
+	// don't allow aNdotV to be less than 0.1 otherwise black artifacts occur
 	float aNdotV = max(dot(V, surface.normal) , 0.1);
 	vec3 aSpecFresnel = fresnelSchlick(aNdotV, surface.specular);
 	float aSpec = (1.0 - aNdotV);
@@ -159,6 +160,7 @@ void main(void)
 	// aSpec provides back lighting from left, right, bottom, and top
 	// aNdotV provides view orientated lighting
 	// surface.normal.y is light from above
+	// 2 * aSpec + aNdotV = 2 - aNdotV
 	diffuse *= (2.0 - aNdotV + max(surface.normal.y, 0.0));
 
 #endif
