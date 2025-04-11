@@ -69,7 +69,7 @@ void getSurface(inout Surface surf)
 	// convert specular into metallic and roughness
 	// this is 
 	surf.metallic = max(fxmap.x - 0.65, 0.0);
-	surf.roughness = (1.0 - fxmap.r) * (180.0 - material.shininess) / 180.0;
+	surf.roughness = (1.0 - fxmap.r) * (200.0 - material.shininess) / 180.0;
 #else
 	surf.specular *= fxmap;
 #endif
@@ -139,6 +139,7 @@ void main(void)
 	vec3 diffuse = scene.ambient.xyz;
 	vec3 ambient = diffuse;
 	vec3 V = normalize(-eyePos);
+
 #ifdef USE_PBR
 	// add hemisphere lighting
 	// don't allow aNdotV to be less than 0.1 otherwise black artifacts occur
@@ -147,12 +148,16 @@ void main(void)
 	float aSpec = (1.0 - aNdotV);
 	float aG = GeometrySchlickSmithGGX(aNdotV, aNdotV, surface.roughness);
 	// for reflected light NdotH is always 1 but this produces to much specular
-	// limit NdotH to range 0.99 to 0.995
-	float aNdotH = 0.090 * aSpec + 0.905;
+	// limit NdotH to range 0.96 to 0.97
+	float aNdotH = 0.010 * aSpec + 0.960;
 	float aD = DistributionGGX(aNdotH, surface.roughness);
-	// add hemishpere specular at glancing angles
-	vec3 glassFresnel =  10.0 * aSpec * ambient * (1.0 - surface.color.a);
-	vec3 hemiSpec = 0.25 * (aNdotV * aSpecFresnel * ambient * aG * aD) + glassFresnel;
+	// add hemishpere specular at glancing angles for all surfaces including glass
+	// glass surfaces are those that have an alpha less than 1.0
+	float glassAlpha = (1.0 - surface.color.a);
+	float glassFresnel =  (aSpec + 0.25 * aG) * min(glassAlpha * 10.0, 0.2);
+	float aNDA = 0.25 * (aNdotV * aG * aD);
+	vec3 hemiSpec = ambient * (aSpecFresnel * aNDA + glassFresnel);
+	surface.color.a += glassAlpha * aSpec;
 
 	// fresnel and metal effect for hemi diffuse
 	diffuse *= (1.0 - aSpecFresnel) * (1.0 - surface.metallic);
@@ -161,7 +166,7 @@ void main(void)
 	// aNdotV provides view orientated lighting
 	// surface.normal.y is light from above
 	// 2 * aSpec + aNdotV = 2 - aNdotV
-	diffuse *= (2.0 - aNdotV + max(surface.normal.y, 0.0));
+	diffuse *= 0.5 * (2.0 - aNdotV + max(surface.normal.y, 0.0));
 
 #endif
 	// fresnel effect for diffuse
@@ -203,10 +208,11 @@ void main(void)
 #endif
 
 	vec3 final_color = (diffuse * surface.color.xyz) * surface.ambientOcclusion + specular;
+
 #ifdef USE_PBR
 	final_color += hemiSpec;
 	// gamma correction
-	final_color *= (2.6 / PI);
+	//final_color *= (2.6 / PI);
 #endif
 	// emmission
 	final_color += (vec3(1.0) - scene.ambient.xyz) * surface.emissive * 1.5;
