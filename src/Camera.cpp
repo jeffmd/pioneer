@@ -443,15 +443,16 @@ void Camera::CalcLighting(const Body *b, double &ambient, double &direct, Color 
 
 	// ambient light fraction
 	// alter ratio between directly and ambiently lit portions towards ambiently lit as sun sets
-	const double fraction = (0.2 + 0.8 * (1.0 - light_clamped)) * Clamp(opticalThicknessFraction, 0.0, 1.0);
+	const double fraction = 0.1 + 0.9 * (1.0 - light_clamped) * Clamp(opticalThicknessFraction, 0.0, 1.0);
 
 	// fraction of light left over to be lit directly
 	direct = (1.0 - fraction) * direct;
-
 	// scale ambient by amount of light
-	ambient = fraction * (Clamp((light), 0.0, 1.0));
-
+	ambient = /*fraction*/0.4 * direct;
 	ambient = std::max(minAmbient, ambient);
+
+	if (ambient <= minAmbient * 1.3 )
+		ambColor = Color::WHITE;
 
 }
 
@@ -582,7 +583,7 @@ void Camera::PrepareLighting(const Body *b, bool doAtmosphere, bool doInteriors)
 	std::vector<float> lightIntensities;
 
 	Color4ub ambientLightColor = Color::WHITE;
-	double ambient = 0.0, direct = 1.0;
+	double ambient = 0.10, direct = 1.0;
 	if (doAtmosphere)
 		CalcLighting(b, ambient, direct, ambientLightColor);
 
