@@ -579,7 +579,9 @@ void StartupScreen::Start()
 		Shields::Init(Pi::renderer);
 	});
 
-	AddStep("BaseSphere::Init", &BaseSphere::Init);
+	AddStep("BaseSphere::Init", []() {
+		BaseSphere::Init(Pi::renderer);
+	});
 
 	AddStep("CityOnPlanet::Init", &CityOnPlanet::Init);
 
@@ -854,7 +856,7 @@ void Pi::App::HandleRequests()
 			if (!Pi::game)
 				break;
 
-			BaseSphere::OnChangeDetailLevel();
+			BaseSphere::OnChangeDetailLevel(Pi::renderer);
 		} break;
 		case InternalRequests::MODELSHADING_LEVEL_CHANGED: {
 			Pi::modelCache->OnChangeRealisticShading(Pi::config->Int("EnableRealisticShading"));

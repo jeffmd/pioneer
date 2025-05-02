@@ -189,7 +189,7 @@
   },
   "DIGESTERS": {
     "description": "custom cargo",
-    "message": "Idisslare"
+    "message": "Rötkammare"
   },
   "DISTANCE": {
     "description": "distance in space, between two locations",
@@ -229,7 +229,7 @@
   },
   "FAILUREMSG_2": {
     "description": "",
-    "message": "Du är försen! Vad skall jag göra med detta nu, när det är värdelöst?"
+    "message": "Du kommer för sent! Vad skall jag göra med detta nu, när det är värdelöst?"
   },
   "FAILUREMSG_3": {
     "description": "",
@@ -269,27 +269,27 @@
   },
   "HOWMUCH_2": {
     "description": "regarding mass, always more than 1t",
-    "message": "{amount}t"
+    "message": "{amount} t."
   },
   "HOWMUCH_3": {
     "description": "regarding mass, always more than 1t",
-    "message": "Massan är {amount}t"
+    "message": "Massan är {amount} t."
   },
   "HOWMUCH_4": {
     "description": "regarding mass, always more than 1t",
-    "message": "Det är {amount}t."
+    "message": "Det är {amount} t."
   },
   "HOWMUCH_SINGULAR_1": {
     "description": "This string is only used for 1 metric ton (singular)",
-    "message": "Det är bara {amount}t"
+    "message": "Det är bara {amount} t."
   },
   "HOWMUCH_WHOLESALER_1": {
     "description": "",
-    "message": "Det är {amount}t av {cargoname}."
+    "message": "Det är {amount} t av {cargoname}."
   },
   "HOWMUCH_WHOLESALER_2": {
     "description": "",
-    "message": "{amount}t {cargoname}"
+    "message": "{amount} t {cargoname}."
   },
   "HOW_MUCH_MASS": {
     "description": "",
@@ -413,7 +413,7 @@
   },
   "OFFER": {
     "description": "",
-    "message": "Transportera {amount}t för {reward}"
+    "message": "Transportera {amount} t för {reward}"
   },
   "OK_AGREED": {
     "description": "",
@@ -665,7 +665,7 @@
   },
   "WHYSOMUCH_CHEMICAL_1": {
     "description": "",
-    "message": "Produktionen i kemifabriken är avhängit dessa varor. Inget får hindra maskinen."
+    "message": "Produktionen i kemifabriken är beroende av dessa varor. Inget får hindra maskinen."
   },
   "WHYSOMUCH_EXPENSIVE_1": {
     "description": "",

@@ -1,13 +1,56 @@
+April
+  * Fixes
+    * Ship Market - Crash: attempt to index field '?' (#6101)
+    * Police refuse to fight (#6065)
+    * Ship weapon ignores overheat (#6057)
+    * Size 5+ weapons cannot be equipped by any ship? (#6077)
+    * Follow orientation cannot be turned off if far from target (#6081)
+    * Duplicated "Heavy Atmospheric Shielding" on S3, instead of S3 and S4 (#6038)
+    * Station Name Overlap in System View Economy window Fix Suggestion (#6091)
+    * Low contrast between active and inactive BBS entry colors (#5966)
+    * Goods Trader - Glitch in prices (#6075)
+    * On sale keep mentionning ship fully equipped (#6049)
+    * Fix nav ligts and model (#6105)
+    * Fixing skipjack collision interfering with takeoffs. (#6111)
+    * Fix pressure limit value if no atmo shield is installed (#6117)
+    * Fix grammar in Combat mission Strings (#6102)
+    * Fix interrupted SAR missions, draggable popups in worldview (#6120)
+    * Fix pressure limit value if no atmo shield is installed (#6117)
+    * Fixing and cleaning up skipjack (#6123)
+
+  * Internal
+    * Character - Separate first name and surname (#6114)
+
+March
+  * New Features
+    * Show status "pending" if the cargo & combat missions has not yet been fully completed (#6082)
+    * Paint Shop - Randomize colors (#6069)
+
+  * Fixes
+    * Fix MILITARY tech level display and availability (#6062)
+    * Fix savegames not loading: Sort lua components during serialization (#6070)
+    * Fix crash at alt-tab in the start menu equip tab (#6097)
+    * Reduce Scout mission ad frequency on BBS (#6095)
+
+  * Internal
+    * Read/write save games from/to the savefiles folder (#6083)
+    * Detect Windows 11, update GL Renderer name (#6088)
+    * Update ubuntu version 20.04 -> 22.04 for build (#6072)
+
 February
   * Fixes
     * Replace `texture2D()` with `texture()` (#6045)
     * Fixing tail Malabar/Vatakara stabilizer decals (#6061)
+    * Lodos normal re-fix (#6054)
+    * Fix lighting on models that use normal maps (#6073)
 
   * Internal
     * Add amd64 architecture (#6043)
     * build-ci: allow re-running release builds on workflow_dispatch (#6037)
     * Conform to C.128, aka: Virtual functions should specify exactly one of virtual, override, or final (#5995)
     * Store AtmosphereParameters in BaseSphere, calculate with material setup (#6059)
+    * Change modelcompiler single model filepathing, change Editor location for MSVC (#6063)
+    * Make Sphere3D/Icosphere reserve space better (#6067)
 
 Pioneer 2025-02-03 Release
   * Fixes

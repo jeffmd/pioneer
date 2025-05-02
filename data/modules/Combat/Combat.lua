@@ -110,7 +110,7 @@ local onChat = function (form, ref, option)
 			sectorx = ad.location.sectorX,
 			sectory = ad.location.sectorY,
 			sectorz = ad.location.sectorZ,
-			mission = l["MISSION_TYPE_" .. math.ceil(ad.dedication * NUMSUBTYPES)],
+			mission = l["MISSION_TYPE_CONVO_" .. math.ceil(ad.dedication * NUMSUBTYPES)],
 			dist    = string.format("%.2f", ad.dist),
 		})
 		form:SetMessage(introtext)
@@ -304,6 +304,7 @@ local onShipDestroyed = function (ship, attacker)
 				table.remove(mission.mercenaries, i)
 				if not mission.complete and (#mission.mercenaries == 0 or mission.dedication <= ARMEDRECON) then
 					mission.complete = true
+					mission.status = "PENDING_RETURN"
 					Comms.ImportantMessage(l.MISSION_COMPLETE)
 				end
 				if attacker and attacker:isa("Ship") and attacker:IsPlayer() then
@@ -320,6 +321,7 @@ local missionTimer = function (mission)
 		if mission.complete or Game.time > mission.due then return true end -- already complete or too late
 		if Game.player.frameBody and Game.player.frameBody.path == mission.location then
 			mission.complete = true
+			mission.status = "PENDING_RETURN"
 			Comms.ImportantMessage(l.MISSION_COMPLETE)
 			return true
 		else
@@ -507,7 +509,9 @@ local buildMissionDescription = function(mission)
 
 	local desc = {}
 	local dist = Game.system and string.format("%.2f", Game.system:DistanceTo(mission.location)) or "???"
-	local type = l["MISSION_TYPE_" .. math.ceil(mission.dedication * NUMSUBTYPES)]
+	local subtype = math.ceil(mission.dedication * NUMSUBTYPES)
+	local missiontype = l["MISSION_TYPE_" .. subtype]
+	local missiontypeconvo = l["MISSION_TYPE_CONVO_" .. subtype]
 
 	desc.description = mission.introtext:interp({
 		name    = mission.client.name,
@@ -518,18 +522,23 @@ local buildMissionDescription = function(mission)
 		sectorx = mission.location.sectorX,
 		sectory = mission.location.sectorY,
 		sectorz = mission.location.sectorZ,
-		mission = type,
+		mission = missiontypeconvo,
 		dist    = dist
 	})
 
 	desc.client = mission.client
-	desc.location = mission.location
+
+	if mission.status == "PENDING_RETURN" and mission.rendezvous then
+		desc.location = mission.rendezvous
+	else
+		desc.location = mission.location
+	end
 
 	local paymentLoc = mission.rendezvous and ui.Format.SystemPath(mission.rendezvous)
 		or string.interp(l[mission.flavour.id .. "_LAND_THERE"], { org = mission.org })
 
 	desc.details = {
-		{ l.MISSION, type },
+		{ l.MISSION, missiontype },
 		{ l.SYSTEM, ui.Format.SystemPath(mission.location) },
 		{ l.AREA, mission.location:GetSystemBody().name },
 		{ l.DISTANCE, dist.." "..lc.UNIT_LY },

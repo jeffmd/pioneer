@@ -9,7 +9,7 @@
   },
   "ADVICE_11_BODYTEXT": {
     "description": "",
-    "message": "Make sure you know the surface gravity of a planet before you even think of landing on it."
+    "message": "Stellen Sie sicher, dass Sie die Schwerkraft an der Planetenoberfläche kennen, bevor Sie überhaupt daran denken dort zu landen."
   },
   "ADVICE_11_HEADLINE": {
     "description": "A reference to the song 'The Harder They Come', by Jimmy Cliff",
@@ -25,7 +25,7 @@
   },
   "ADVICE_2_BODYTEXT": {
     "description": "",
-    "message": "Many small distances are faster travelled than their sum, but at the expense of using more fuel."
+    "message": "Viele kleine Sprünge sind schneller als ein großer Sprung über die selbe Distanz, brauchen aber mehr Treibstoff."
   },
   "ADVICE_2_HEADLINE": {
     "description": "(A reference to the famous poem The Road Not Taken, by Robert Frost)",
