@@ -87,7 +87,7 @@ void ModelSpinner::Render()
 
 	float lightIntensity[4] = { 0.75f, 0.f, 0.f, 0.f };
 	r->SetLightIntensity(4, lightIntensity);
-	r->SetAmbientColor(Color(64, 64, 64));
+	r->SetAmbientColor(Color(50, 50, 50));
 
 	r->ClearScreen(Color(0, 0, 0, 0));
 
