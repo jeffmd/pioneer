@@ -109,7 +109,7 @@ void PbrDirectionalLight(in Light light, in float intensity, in Surface surf, in
 
 
 	float HdotV = max(dot(H, V), 0.001);
-	vec3 specFresnel = fresnelSchlick(HdotV, surf.specular);
+	vec3 specFresnel = (1.0 - surf.roughness) * fresnelSchlick(HdotV, surf.specular);
 
 	// modified cook-torrance specular brdf
 	float D = DistributionGGX(max(dot(N, H), 0.001), surf.roughness);
@@ -120,9 +120,8 @@ void PbrDirectionalLight(in Light light, in float intensity, in Surface surf, in
 	// add to outgoing specular radiance
 	specular += DGF * 0.25 * light.specular.xyz * intensity * NdotL;
 
-	// fresnel effect for diffuse
-	vec3 kD = vec3(1.0) - specFresnel;
-	kD *= 1.0 - surf.metallic;
+	// fresnel and metallic effect for diffuse
+	vec3 kD = (1.0 - specFresnel) * (1.0 - surf.metallic);
 	// add to outgoing diffuse radiance
 	diffuse += kD * light.diffuse.xyz * intensity * NdotL;// * (1.0 / PI);
 }
