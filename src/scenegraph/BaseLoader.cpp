@@ -154,3 +154,14 @@ void BaseLoader::SetUpPatterns()
 	m_model->SetColors(colors);
 	m_model->SetPattern(0);
 }
+
+void BaseLoader::ChangeRealisticShading(Graphics::Renderer *renderer, const int enableRealisticShading)
+{
+	if (enableRealisticShading != 0) {
+		renderer->SetShaderUserDefines("multi", "#define USE_PBR\n");
+	}
+	else {
+		renderer->SetShaderUserDefines("multi", "");
+	}
+}
+

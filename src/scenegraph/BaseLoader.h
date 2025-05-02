@@ -23,6 +23,7 @@ namespace SceneGraph {
 
 		//allocate material for dynamic decal, should be used in order 1..4
 		RefCountedPtr<Graphics::Material> GetDecalMaterial(unsigned int index);
+		static void ChangeRealisticShading(Graphics::Renderer *renderer, const int enableRealisticShading);
 
 	protected:
 		Graphics::Renderer *m_renderer;

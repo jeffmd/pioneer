@@ -52,6 +52,7 @@ namespace Editor
 			bool showTags;
 			bool showDockingLocators;
 			bool showGeomBBox;
+			bool usePBR;
 			bool wireframe;
 
 			bool showLandingPad;

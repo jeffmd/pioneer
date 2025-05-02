@@ -477,6 +477,7 @@ void ModelViewerWidget::OnRender(Graphics::Renderer *r)
 
 	// Render the active model
 	if (m_model) {
+		SceneGraph::Loader::ChangeRealisticShading(m_renderer, m_options.usePBR);
 		DrawModel(m_modelViewMat);
 	}
 
@@ -686,6 +687,7 @@ void ModelViewerWidget::DrawMenus()
 		m_options.showAabb = m_options.showCollMesh;
 		ImGui::Checkbox("Show Geometry Bounds", &m_options.showGeomBBox);
 		ImGui::Checkbox("Show Tags", &m_options.showTags);
+		ImGui::Checkbox("Use PBR shader", &m_options.usePBR);
 		m_options.showDockingLocators = m_options.showTags;
 
 		ImGui::EndMenu();
