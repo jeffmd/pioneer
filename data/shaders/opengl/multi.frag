@@ -67,9 +67,8 @@ void getSurface(inout Surface surf)
 	vec3 fxmap = texture(texture1, texCoord0).rgb;
 #ifdef USE_PBR
 	// convert specular into metallic and roughness
-	// this is 
-	surf.metallic = max(fxmap.x - 0.65, 0.0);
-	surf.roughness = (1.0 - fxmap.r) * (200.0 - material.shininess) / 180.0;
+	surf.metallic = fxmap.x * 0.4;
+	surf.roughness = (1.0 - fxmap.r) * (180.0 - material.shininess) / 180.0;
 #else
 	surf.specular *= fxmap;
 #endif
@@ -117,6 +116,10 @@ void getSurface(inout Surface surf)
 	// HACK emissive maps are authored weirdly, mostly under the assumption that they will be multiplied by diffuse
 	// We mix a litle towards white to make the emissives pop more
 	surf.emissive = mix(surf.color.xyz, vec3(1.0), 0.4) * texture(texture2, texCoord0).xyz; //glow map
+#ifdef USE_PBR
+	float amb = 0.33 * (scene.ambient.x + scene.ambient.y + scene.ambient.z);
+	surf.emissive = 25.0 * (0.15 - min(amb, 0.135)) * surf.emissive; //glow map
+#endif
 #else
 	surf.emissive = material.emission.xyz; //just emissive parameter
 #endif
@@ -142,31 +145,25 @@ void main(void)
 
 #ifdef USE_PBR
 	// add hemisphere lighting
-	// don't allow aNdotV to be less than 0.1 otherwise black artifacts occur
-	float aNdotV = max(dot(V, surface.normal) , 0.1);
-	vec3 aSpecFresnel = fresnelSchlick(aNdotV, surface.specular);
-	float aSpec = (1.0 - aNdotV);
-	float aG = GeometrySchlickSmithGGX(aNdotV, aNdotV, surface.roughness);
-	// for reflected light NdotH is always 1 but this produces to much specular
-	// limit NdotH to range 0.96 to 0.97
-	float aNdotH = 0.010 * aSpec + 0.960;
-	float aD = DistributionGGX(aNdotH, surface.roughness);
+	float aNdotV = max(dot(V, surface.normal), 0.001);
 	// add hemishpere specular at glancing angles for all surfaces including glass
+	vec3 specRefl = reflect(-V, surface.normal);
+	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.3;
+	vec3 aSpecFresnel = Ka * (1.0 - 0.8 * surface.roughness) * fresnelSchlick(aNdotV, surface.specular);
 	// glass surfaces are those that have an alpha less than 1.0
 	float glassAlpha = (1.0 - surface.color.a);
-	float glassFresnel =  (aSpec + 0.25 * aG) * min(glassAlpha * 10.0, 0.2);
-	float aNDA = 0.25 * (aNdotV * aG * aD);
-	vec3 hemiSpec = ambient * (aSpecFresnel * aNDA + glassFresnel);
-	surface.color.a += glassAlpha * aSpec;
+	// specular lighting as a result from hemisphere
+	vec3 hemiSpec = ambient * aSpecFresnel * (1.0 + min(10.0 * glassAlpha, 3.0));
+	// increase alpha for specular lighting on glass
+	surface.color.a += glassAlpha * 0.5 * (1.0 - aNdotV);
 
 	// fresnel and metal effect for hemi diffuse
-	diffuse *= (1.0 - aSpecFresnel) * (1.0 - surface.metallic);
+	diffuse *= (1.0 - surface.metallic);
 	// hemisphere diffuse  (multiple lights) 
-	// aSpec provides back lighting from left, right, bottom, and top
-	// aNdotV provides view orientated lighting
-	// surface.normal.y is light from above
-	// 2 * aSpec + aNdotV = 2 - aNdotV
-	diffuse *= 0.5 * (2.0 - aNdotV + max(surface.normal.y, 0.0));
+	// provides diffuse lighting from front, left, right, bottom, and top
+	// this would mormally be a lookup in a cube map texture using the normal vector
+	// use simple hemisphere gradient from sky to ground
+	diffuse *=  Ka;
 
 #endif
 	// fresnel effect for diffuse
@@ -212,10 +209,10 @@ void main(void)
 #ifdef USE_PBR
 	final_color += hemiSpec;
 	// gamma correction
-	//final_color *= (2.6 / PI);
+	final_color *= 2.5 / PI;
 #endif
 	// emmission
-	final_color += (vec3(1.0) - scene.ambient.xyz) * surface.emissive * 1.5;
+	final_color += surface.emissive;
 	frag_color = vec4(final_color, surface.color.w);
 
 #ifdef HEAT_COLOURING
