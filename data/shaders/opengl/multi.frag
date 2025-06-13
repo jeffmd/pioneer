@@ -64,13 +64,16 @@ void getSurface(inout Surface surf)
 	surf.specular = material.specular.xyz;
 
 #ifdef MAP_SPECULAR
-	vec3 fxmap = texture(texture1, texCoord0).rgb;
 #ifdef USE_PBR
+#ifndef MAP_PBR
+	vec3 fxmap = texture(texture1, texCoord0).rgb;
 	// convert specular into metallic and roughness
-	surf.metallic = fxmap.x * 0.4;
-	surf.roughness = (1.0 - fxmap.r) * (180.0 - material.shininess) / 180.0;
+	surf.metallic = fxmap.r * 0.2;
+	surf.roughness = (1.0 - fxmap.r) * (200.0 - material.shininess) / 260.0;
+#endif
 #else
-	surf.specular *= fxmap;
+	vec3 specmap = texture(texture1, texCoord0).rgb;
+	surf.specular *= specmap;
 #endif
 #endif
 
@@ -116,10 +119,6 @@ void getSurface(inout Surface surf)
 	// HACK emissive maps are authored weirdly, mostly under the assumption that they will be multiplied by diffuse
 	// We mix a litle towards white to make the emissives pop more
 	surf.emissive = mix(surf.color.xyz, vec3(1.0), 0.4) * texture(texture2, texCoord0).xyz; //glow map
-#ifdef USE_PBR
-	float amb = 0.33 * (scene.ambient.x + scene.ambient.y + scene.ambient.z);
-	surf.emissive = 25.0 * (0.15 - min(amb, 0.135)) * surf.emissive; //glow map
-#endif
 #else
 	surf.emissive = material.emission.xyz; //just emissive parameter
 #endif
@@ -140,31 +139,48 @@ void main(void)
 #if (NUM_LIGHTS > 0)
 	// ambient only make sense with lighting
 	vec3 diffuse = scene.ambient.xyz;
-	vec3 ambient = diffuse;
 	vec3 V = normalize(-eyePos);
 
 #ifdef USE_PBR
+	vec3 ambient = diffuse * 1.5;
+	ambient = min(ambient, 0.6);
 	// add hemisphere lighting
-	float aNdotV = max(dot(V, surface.normal), 0.001);
 	// add hemishpere specular at glancing angles for all surfaces including glass
 	vec3 specRefl = reflect(-V, surface.normal);
-	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.3;
-	vec3 aSpecFresnel = Ka * (1.0 - 0.8 * surface.roughness) * fresnelSchlick(aNdotV, surface.specular);
+	float smoothness = 1.0 - surface.roughness;
+	smoothness = pow(smoothness, 7.0);
+	float x = 0.5 + smoothness * 0.5 * specRefl.x;
+	float y = 0.5 + smoothness * 0.5 * specRefl.y;
+	vec3 reflection = smoothness * texture(texture0, vec2(x, y)).rgb;
+	ambient = mix(ambient, reflection, smoothness);
+	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.0;
+	// ground reflectance
+	float Rground = (2.0 - Ka) * 0.5;
+	// horizon reflectance
+	float Rhorizon = 1.0 - abs(Ka - 1.0);
+	// make horizon a little bit brighter
+	vec3 ambRefl = 0.2 * (1.0 - ambient);
+	// combined hemisphere reflectance
+	vec3 reflectance = ambRefl * (Rhorizon + Rground);
 	// glass surfaces are those that have an alpha less than 1.0
 	float glassAlpha = (1.0 - surface.color.a);
-	// specular lighting as a result from hemisphere
-	vec3 hemiSpec = ambient * aSpecFresnel * (1.0 + min(10.0 * glassAlpha, 3.0));
-	// increase alpha for specular lighting on glass
-	surface.color.a += glassAlpha * 0.5 * (1.0 - aNdotV);
+	// fresnel lighting as a result from hemisphere
+	float aNdotV = max(dot(V, surface.normal), 0.001);
+	vec3 aSpecFresnel = fresnelSchlickRX(aNdotV, surface.specular, 0.5);
+	vec3 hemiSpecFresnel = (ambient * Ka + reflectance) * aSpecFresnel * (0.5 + min(30.0 * glassAlpha, 2.0));
+	// increase alpha for specular lighting on glass but not decals
+	// decals have alpha of 0 for non colored areas
+	surface.color.a += surface.color.a * glassAlpha * (1.0 - aNdotV);
 
-	// fresnel and metal effect for hemi diffuse
-	diffuse *= (1.0 - surface.metallic);
 	// hemisphere diffuse  (multiple lights) 
 	// provides diffuse lighting from front, left, right, bottom, and top
 	// this would mormally be a lookup in a cube map texture using the normal vector
 	// use simple hemisphere gradient from sky to ground
-	diffuse *=  Ka;
-
+	diffuse = ambient * Ka;
+	diffuse += reflectance;
+	// metal effect for hemi diffuse
+	diffuse *= (1.0 - surface.metallic);
+	
 #endif
 	// fresnel effect for diffuse
 
@@ -207,11 +223,15 @@ void main(void)
 	vec3 final_color = (diffuse * surface.color.xyz) * surface.ambientOcclusion + specular;
 
 #ifdef USE_PBR
-	final_color += hemiSpec;
+	final_color += hemiSpecFresnel;
 	// gamma correction
-	final_color *= 2.5 / PI;
+	//final_color *= 2.5 / PI;
 #endif
 	// emmission
+#ifdef USE_PBR
+	float amb = 0.33 * (ambient.x + ambient.y + ambient.z);
+	surface.emissive = 25.0 * (0.13 - min(amb, 0.115)) * surface.emissive; //glow map
+#endif
 	final_color += surface.emissive;
 	frag_color = vec4(final_color, surface.color.w);
 

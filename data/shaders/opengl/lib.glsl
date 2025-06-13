@@ -85,9 +85,9 @@ float DistributionGGX(float NdotH, float a)
 	return (a2 + 0.001)/ base;
 }
 
-vec3 fresnelSchlick(float HdotV, vec3 F0)
+vec3 fresnelSchlickRX(float HdotV, vec3 F0, float limit)
 {
-	return F0 + (1.0 - F0) * pow(1.0001 - HdotV, 5.0);
+	return (F0 + limit * (1.0 - F0) * pow(1.0001 - HdotV, 5.0));
 }
 
 float GeometrySchlickSmithGGX(float NdotL, float NdotV, float roughness)
@@ -109,13 +109,13 @@ void PbrDirectionalLight(in Light light, in float intensity, in Surface surf, in
 
 
 	float HdotV = max(dot(H, V), 0.001);
-	vec3 specFresnel = (1.0 - surf.roughness) * fresnelSchlick(HdotV, surf.specular);
+	vec3 specFresnel = fresnelSchlickRX(HdotV, surf.specular, surf.roughness);
 
 	// modified cook-torrance specular brdf
 	float D = DistributionGGX(max(dot(N, H), 0.001), surf.roughness);
 	float NdotL = max(dot(N, L), 0.001);
 	float NdotV = max(dot(N, V), 0.001);
-	float G = GeometrySchlickSmithGGX(NdotL, NdotV, surf.roughness);
+	float G = GeometrySchlickSmithGGX(NdotL, NdotV, 1.0);
     vec3 DGF = D * G * specFresnel;
 	// add to outgoing specular radiance
 	specular += DGF * 0.25 * light.specular.xyz * intensity * NdotL;
