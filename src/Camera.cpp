@@ -364,7 +364,7 @@ void Camera::Draw(const Body *excludeBody)
 //    * As suns set the split is biased towards ambient
 void Camera::CalcLighting(const Body *b, double &ambient, double &direct, Color &ambColor) const
 {
-	const double minAmbient = 0.10;
+	const double minAmbient = 0.05;
 	ambient = minAmbient;
 	direct = 1.0;
 
@@ -443,12 +443,13 @@ void Camera::CalcLighting(const Body *b, double &ambient, double &direct, Color 
 
 	// ambient light fraction
 	// alter ratio between directly and ambiently lit portions towards ambiently lit as sun sets
-	const double fraction = 0.1 + 0.9 * (1.0 - light_clamped) * Clamp(opticalThicknessFraction, 0.0, 1.0);
+	const double fraction = 0.2 + 0.8 * (1.0 - light_clamped) * Clamp(opticalThicknessFraction, 0.0, 1.0);
 
 	// fraction of light left over to be lit directly
 	direct = (1.0 - fraction) * direct;
+
 	// scale ambient by amount of light
-	ambient = /*fraction*/0.4 * direct;
+	ambient = direct * 0.15 + fraction * (Clamp((light), 0.0, 1.0)) * 0.25;
 	ambient = std::max(minAmbient, ambient);
 
 	if (ambient <= minAmbient * 1.3 )
