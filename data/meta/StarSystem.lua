@@ -29,7 +29,9 @@
 ---
 --- Translated description for the system
 ---@field shortDescription string
---- Translated description of the system's government type
+--- Translated (short) custom description of the system
+---@field longDescription string
+--- Translated (long) custom description of the system
 ---@field govDescription string
 --- Translated description of the system's economic type
 ---@field econDescription string
@@ -46,7 +48,7 @@ function StarSystem:GetBodyPaths() end
 ---@return SystemBody[]
 function StarSystem:GetStars() end
 
----@return boolean[]
+---@return SystemBody[]
 function StarSystem:GetJumpable() end
 
 ---@param name string Commodity identifier

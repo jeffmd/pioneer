@@ -14,6 +14,7 @@ local ModalWindow = require 'pigui.libs.modal-win'
 local ModelSpinner = require 'PiGui.Modules.ModelSpinner'
 local ModelSkin = require 'SceneGraph.ModelSkin'
 local Lang = require 'Lang'
+local PlayerState = require 'PlayerState'
 local l = Lang.GetResource("ui-core")
 
 local rescaleVector = ui.rescaleUI(Vector2(1, 1), Vector2(1600, 900), true)
@@ -22,7 +23,6 @@ local colors = ui.theme.colors
 local icons = ui.theme.icons
 
 local pionillium = ui.fonts.pionillium
-local orbiteer = ui.fonts.orbiteer
 
 local face = nil
 local stationSeed = false
@@ -62,8 +62,8 @@ local popup = ModalWindow.New('ChiefMechanicPopup', function(self)
 end)
 
 local tryRepair = function (damage, price)
-	if Game.player:GetMoney() >= price then
-		Game.player:AddMoney(-price)
+	if PlayerState.GetMoney() >= price then
+		PlayerState.AddMoney(-price)
 		Game.player:SetHullPercent(Game.player:GetHullPercent() + damage)
 		ui.playSfx("Repairing_Ship")
 	else
@@ -168,10 +168,10 @@ end
 local function applyChanges()
 	local player = Game.player
 	if not changesMade then return end
-	if price < player:GetMoney() then
+	if price < PlayerState.GetMoney() then
 		player.model:SetPattern(previewPattern)
 		player:SetSkin(previewSkin)
-		player:AddMoney(-price)
+		PlayerState.AddMoney(-price)
 		ui.playSfx("Painting_Ship")
 		popupChangesApplied:open()
 		changesMade = false
@@ -201,7 +201,7 @@ local function drawShipRepair()
 	ui.withStyleVars({ItemSpacing = widgetSizes.itemSpacing}, function ()
 		local infoColumnWidth = ui.getContentRegion().x - widgetSizes.faceSize.x - widgetSizes.itemSpacing.x
 
-		ui.child("ShipStatus", Vector2(infoColumnWidth, 0), {}, function ()
+		ui.child("ShipStatus", Vector2(infoColumnWidth, 0), function ()
 
 			ui.withFont(pionillium.body, function ()
 				if hullPercent > 99.9 then
@@ -275,7 +275,7 @@ local function drawPaintshop()
 	local rand = Rand.New(station.seed)
 
 	local priceColor = textColorDefault
-	if price > player:GetMoney() then
+	if price > PlayerState.GetMoney() then
 		priceColor = textColorWarning
 	end
 
@@ -283,14 +283,14 @@ local function drawPaintshop()
 	local itemSpacing = Vector2(8, 6)
 	local verticalDummy = Vector2(0, 50)
 	ui.withStyleVars({ ItemSpacing = itemSpacing }, function ()
-		ui.child("PaintshopModelSpinner", Vector2(columnWidth, 0), {}, function()
+		ui.child("PaintshopModelSpinner", Vector2(columnWidth, 0), function()
 			modelSpinner:setSize(ui.getContentRegion())
 			modelSpinner:draw()
 		end)
 
 		ui.sameLine()
 
-		ui.child("PaintshopControls", Vector2(columnWidth, 0), {}, function ()
+		ui.child("PaintshopControls", Vector2(columnWidth, 0), function ()
 			ui.text(l["PAINTSHOP_WELCOME_" .. rand:Integer(NUM_WELCOME_MESSAGES - 1)])
 			ui.dummy(verticalDummy)
 			ui.text(l.PLEASE_DESIGN_NEW_PAINTJOB)

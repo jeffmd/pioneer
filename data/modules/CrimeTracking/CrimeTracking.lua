@@ -7,6 +7,7 @@ local Engine = require 'Engine'
 local Timer = require 'Timer'
 local Serializer = require 'Serializer'
 local Legal = require 'Legal'
+local PlayerState = require 'PlayerState'
 
 -- Fine at which police will launch and hunt donwn outlaw player
 local maxFineTolerated = 300
@@ -18,7 +19,7 @@ local policeDispatched = false
 local function doLawAndOrder ()
 	if Game.player.flightState == "HYPERSPACE" then return end
 
-	local crimes, fine = Game.player:GetCrimeOutstanding()
+	local crimes, fine = PlayerState.GetCrimeOutstanding()
 	if not policeDispatched then
 		if fine > maxFineTolerated and
 		Game.player.flightState == "FLYING" and
@@ -102,6 +103,13 @@ local onShipFiring = function(ship)
 end
 
 
+local unlawfulDischargeECM = function(ship)
+	if ship:IsPlayer() then
+		Legal:notifyOfCrime(ship,"ECM_DISCHARGE")
+	end
+end
+
+
 local onLeaveSystem = function(ship)
 	if not ship:IsPlayer() then return end
 	-- if we leave the system, the space station object will be invalid
@@ -121,6 +129,7 @@ end
 Event.Register("onShipHit", onShipHit)
 Event.Register("onShipDestroyed", onShipDestroyed)
 Event.Register("onShipFiring", onShipFiring)
+Event.Register("unlawfulDischargeECM", unlawfulDischargeECM)
 Event.Register("onJettison", onJettison)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)

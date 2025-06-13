@@ -72,6 +72,10 @@ local styleColors = {
 	primary_500a	= Color "4C5AA4",
 	primary_700a	= Color "3A4688",
 
+	-- "Alternate" primary colors with high desaturation for thin outline elements
+
+	primary_500b	= Color "6E7080",
+
 	accent_100		= Color "BBDDFF",
 	accent_200		= Color "8FC8FF",
 	accent_300		= Color "62B2FF",
@@ -220,8 +224,11 @@ theme.colors = {
 	FrameBgHovered			= styleColors.panel_700,
 	FrameBgActive			= styleColors.panel_700,
 
+	Border					= styleColors.primary_500b:opacity(0.5),
+	Separator				= styleColors.primary_500b:opacity(0.5),
+
 	Tab						= styleColors.primary_800,
-	TabActive				= styleColors.primary_600,
+	TabSelected				= styleColors.primary_600,
 	TabHovered				= styleColors.primary_500,
 
 	Header					= styleColors.primary_800,
@@ -315,6 +322,7 @@ theme.colors = {
 theme.styles = rescaleUI {
 	WindowBorderSize = 0.0,
 	WindowPadding = Vector2(8, 8),
+	FramePadding = Vector2(4, 3),
 	TabRounding = 0.0,
 	TabPadding = Vector2(8, 6),
 	ButtonPadding = Vector2(8, 6),
@@ -322,10 +330,13 @@ theme.styles = rescaleUI {
 	ItemInnerSpacing = Vector2(4, 4),
 	MainButtonSize = Vector2(38, 38),
 	SmallButtonSize = Vector2(30, 30),
+	SeparatorTextBorderSize = 1.0,
+	SeparatorTextPadding = Vector2(16, 3),
 	IconButtonPadding = Vector2(3, 3),
 	InlineIconPadding = Vector2(2, 2),
 	MainButtonPadding = 3,
-	ItemCardRounding = 4
+	ItemCardRounding = 4,
+	StyleRounding = 4,
 }
 
 theme.icons = {
@@ -354,6 +365,7 @@ theme.icons = {
 	antinormal_thin = 20,
 	normal_thin = 21,
 	frame_away = 22,
+	-- EMPTY = 23,
 	direction = 24,
 	direction_hollow = 25,
 	direction_frame = 26,
@@ -370,7 +382,7 @@ theme.icons = {
 	asteroid_hollow = 36,
 	current_height = 37,
 	current_periapsis = 38,
-	-- UNUSED current_line = 39,
+	-- EMPTY = 39,
 	current_apoapsis = 40,
 	eta = 41,
 	altitude = 42,
@@ -394,6 +406,7 @@ theme.icons = {
 	hyperspace_off = 59,
 	scanner = 60,
 	message_bubble = 61,
+	-- UNUSED = 62,
 	fuel = 63,
 	-- fifth row
 	heavy_passenger_shuttle = 64,
@@ -443,7 +456,7 @@ theme.icons = {
 	time_forward_100x = 106,
 	filter_bodies = 107,
 	filter_stations = 108,
-	filter_ships = 109,
+	police_tab_alert = 109,
 	lagrange_marker = 110,
 	system_overview_vertical = 111,
 	-- eighth row
@@ -454,7 +467,7 @@ theme.icons = {
 	warning_1 = 116,
 	warning_2 = 117,
 	warning_3 = 118,
-	-- moon = 119, -- smaller duplicate of 67
+	reset = 119,
 	combattarget = 120,
 	navtarget = 121,
 	alert1 = 122,
@@ -476,7 +489,7 @@ theme.icons = {
 	personal_info = 137,
 	personal = 138,
 	roster = 139,
-	map = 140,
+	crowd = 140,
 	sector_map = 141,
 	system_map = 142,
 	system_overview = 143,
@@ -496,13 +509,13 @@ theme.icons = {
 	search_lens = 156,
 	message = 157,
 	message_open = 158,
-	search_binoculars = 159,
+	-- EMPTY = 159,
 	-- eleventh row
 	planet_grid = 160,
-	bookmarks = 161,
-	unlocked = 162,
-	locked = 163,
-	-- EMPTY = 164,
+	bookmark = 161,
+	-- EMPTY = 162,
+	-- EMPTY = 163,
+	legal = 164, -- UNUSED
 	label = 165,
 	broadcast = 166,
 	shield_other = 167,
@@ -517,21 +530,21 @@ theme.icons = {
 	-- twelfth row
 	-- BBS replacement icons
 	-- TODO: mission display needs to be converted to use these instead of loading individual icons from disk
-	-- mission_default = 176,
+	-- EMPTY = 176,
 	alert_generic = 177,
-	-- fuel_radioactive = 178,
-	-- assassination = 179,
+	fuel_radioactive = 178,
+	-- EMPTY = 179,
 	money = 180,
-	-- news = 181,
-	-- crew = 182, -- duplicate of 138
-	-- taxi = 183,
-	-- taxi_urgent = 184,
-	-- haul = 185,
-	-- haul_urgent = 186,
-	-- delivery = 187,
-	-- delivery_urgent = 188,
-	-- goodstrader = 189, -- duplicate of 132
-	-- servicing_repair = 190,
+	news = 181, -- UNUSED
+	-- EMPTY = 182,
+	mission_taxi = 183,
+	mission_taxi_urgent = 184,
+	mission_haul = 185,
+	mission_haul_urgent = 186,
+	mission_delivery = 187,
+	mission_delivery_urgent = 188,
+	-- EMPTY = 189,
+	wrench = 190, -- UNUSED
 	view_flyby = 191,
 	-- thirteenth row
 	cog = 192,
@@ -546,19 +559,23 @@ theme.icons = {
 	apoapsis = 201,
 	reset_view = 202,
 	toggle_grid = 203,
-	-- UNUSED plus = 204,
+	-- EMPTY = 204,
 	-- EMPTY = 205
 	decrease = 206,
 	increase = 207,
-	-- fourteenth row, wide icons
-	missile_unguided = 208,
-	missile_guided = 210,
-	missile_smart = 212,
-	missile_naval = 214,
+	-- fourteenth row
+	-- EMPTY = 208,
+	-- EMPTY = 209,
+	-- EMPTY = 210,
+	-- EMPTY = 211,
+	-- EMPTY = 212,
+	-- EMPTY = 213,
+	-- EMPTY = 214,
+	-- EMPTY = 215,
 	find_person = 216,
 	cargo_manifest = 217,
 	trashcan = 218,
-	bookmark = 219,
+	bookmark_book = 219,
 	pencil = 220,
 	fountain_pen = 221,
 	cocktail_glass = 222,
@@ -566,9 +583,8 @@ theme.icons = {
 	-- fifteenth row
 	chart = 224,
 	binder = 225,
-	-- navtarget = 226,		-- duplicate of 121
-	-- ships_no_orbits = 227,	-- duplicate of 52
-	ships_no_orbits = 52,
+	-- EMPTY = 226,
+	-- EMPTY = 227,
 	ships_with_orbits = 228,
 	lagrange_no_text = 229,
 	lagrange_with_text = 230,
@@ -603,7 +619,7 @@ theme.icons = {
 	follow_ori = 256,
 	follow_pos = 257,
 	follow_edge = 258,
-	follow_fill = 259,
+	-- EMPTY = 259,
 	manual_flight = 260,
 	cruise_fwd = 261,
 	cruise_up = 262,
@@ -618,7 +634,7 @@ theme.icons = {
 	filesystem_load = 271,
 	-- eighteenth row
 	equip_cargo_scoop = 272,
-	equip_fuel_scoop = 273,
+	-- EMPTY = 273,
 	equip_multi_scoop = 274,
 	equip_beamlaser = 275,
 	equip_plasma_accelerator = 276,
@@ -640,17 +656,13 @@ theme.icons = {
 	equip_missile_naval = 291,
 	equip_shield_generator = 292,
 	equip_atmo_shield_generator = 293,
-	equip_scanner = 294,
+	-- EMPTY = 294,
 	equip_radar = 295,
 	equip_orbit_scanner = 296,
-	equip_generic = 297,
+	-- EMPTY = 297,
 	equip_cabin_empty = 298,
 	equip_cabin_occupied = 299,
 	equip_thrusters = 300,
-	-- TODO: distinct icons for these
-	equip_thrusters_basic = 300,
-	equip_thrusters_medium = 300,
-	equip_thrusters_best = 300,
 	equip_trade_computer = 301,
 	equip_autopilot = 302,
 	equip_hyperdrive = 303,
@@ -676,7 +688,10 @@ theme.icons = {
 	-- twenty-first row : icons 320 to 335
 	radar_automatic = 320,
 	radar_manual = 321,
-	-- 322 - 335 : empty
+	map_checkmark = 322,
+	about_questionmark = 323,
+	map_selectsystem = 324,
+	-- 325 - 335 : empty
 
 	shipmarket_compare_better = 38,
 	shipmarket_compare_worse = 40,
@@ -687,6 +702,23 @@ theme.icons = {
 
 	chevron_up = 38,
 	chevron_down = 40,
+
+	-- BBS Replacement icons
+	mission_generic = 51,
+	mission_assassination = 150,
+
+	-- TODO: these reuse icons and should have new icons
+	follow_fill = 6,
+	equip_fuel_scoop = 63,
+	ships_no_orbits = 52,
+	filter_ships = 120,
+	equip_scanner = 60,
+	equip_generic = 145,
+
+	-- TODO: distinct icons for these
+	equip_thrusters_basic = 300,
+	equip_thrusters_medium = 300,
+	equip_thrusters_best = 300,
 
 	-- TODO: manual / autopilot
 	-- dummy, until actually defined correctly

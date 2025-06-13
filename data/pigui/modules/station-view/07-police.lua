@@ -12,6 +12,7 @@ local PiGuiFace = require 'pigui.libs.face'
 local Format = require "Format"
 local Character = require "Character"
 local Commodities = require 'Commodities'
+local PlayerState = require 'PlayerState'
 local l = Lang.GetResource("ui-core")
 
 local ModalWindow = require 'pigui.libs.modal-win'
@@ -34,8 +35,6 @@ local popup = ModalWindow.New('policePopup', function(self)
 	end
 end)
 
-local gray = Color(100, 100, 100)
-
 local widgetSizes = ui.rescaleUI({
 	itemSpacing = Vector2(4, 9),
 	faceSize = Vector2(586,565),
@@ -48,12 +47,12 @@ local widgetSizes = ui.rescaleUI({
 
 
 local function payfine(fine)
-	if Game.player:GetMoney() < fine then
+	if PlayerState.GetMoney() < fine then
 		popup:open()
 		return
 	end
-	Game.player:AddMoney(-fine)
-	Game.player:ClearCrimeFine()
+	PlayerState.AddMoney(-fine)
+	PlayerState.ClearCrimeFine()
 end
 
 local function make_crime_list(record)
@@ -90,7 +89,7 @@ local function crime_table(crimes)
 end
 
 local function crime_record()
-	local past_crimes = make_crime_list(Game.player:GetCrimeRecord())
+	local past_crimes = make_crime_list(PlayerState.GetCrimeRecord())
 
 	if #past_crimes > 0 then
 		ui.withFont(orbiteer.heading, function()
@@ -105,7 +104,7 @@ end
 
 
 local function outstanding_fines()
-	local crimes, fine = Game.player:GetCrimeOutstanding()
+	local crimes, fine = PlayerState.GetCrimeOutstanding()
 
 	local crime_list = make_crime_list(crimes)
 	if #crime_list > 0 then
@@ -120,7 +119,7 @@ local function outstanding_fines()
 			crime_table(crime_list)
 			ui.spacing()
 
-			local canPay = Game.player:GetMoney() >= fine
+			local canPay = PlayerState.GetMoney() >= fine
 			local pay_fine_text = string.interp(l.PAY_FINE_OF_N,
 				{ amount = Format.Money(fine) })
 
@@ -232,7 +231,7 @@ local function drawPolice()
 		local infoColumnWidth = ui.getContentRegion().x
 			- widgetSizes.faceSize.x - padding.x * 2
 
-		ui.child("CrimeStats", Vector2(infoColumnWidth, 0), {}, function()
+		ui.child("CrimeStats", Vector2(infoColumnWidth, 0), function()
 			ui.withFont(pionillium.heading, function ()
 				ui.text(intro_txt)
 			end)

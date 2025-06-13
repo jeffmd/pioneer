@@ -7,6 +7,10 @@
     "description": "",
     "message": "Активно"
   },
+  "ADD_BOOKMARK": {
+    "description": "Button to add a singular bookmark",
+    "message": "Add Bookmark"
+  },
   "ADD_JUMP": {
     "description": "UI-button: Add hyper jump to list of planned jumps",
     "message": "Добавить гиперпрыжок"
@@ -78,6 +82,18 @@
   "BACKWARD_ACCEL": {
     "description": "",
     "message": "Ускорение назад"
+  },
+  "BODY_IN_ROUTE": {
+    "description": "Label indicating a star is part of a planned hyperjump route",
+    "message": "Body in planned HyperJump Route"
+  },
+  "BOOKMARK": {
+    "description": "Label introducing a bookmark",
+    "message": "Bookmark"
+  },
+  "BOOKMARKS": {
+    "description": "Label introducing a list of bookmarks",
+    "message": "Bookmarks"
   },
   "BULLETIN_BOARD": {
     "description": "",
@@ -174,6 +190,10 @@
   "CASH_N": {
     "description": "",
     "message": "Счёт: {money}"
+  },
+  "CENTER_ON_CURRENT_SYSTEM": {
+    "description": "Center on current star system",
+    "message": "Center on Current System"
   },
   "CENTER_ON_SYSTEM": {
     "description": "Center on selected star system",
@@ -376,8 +396,8 @@
     "message": "Criminal Record"
   },
   "CURRENT_FUEL": {
-    "description": "For hyperjump planner",
-    "message": "Топлива в наличии:"
+    "description": "Label indicating the current fuel state",
+    "message": "Current Fuel"
   },
   "CURRENT_SAVEGAME_VERSION": {
     "description": "Message when restoring savegame",
@@ -388,8 +408,8 @@
     "message": "Текущий корабль"
   },
   "CURRENT_SYSTEM": {
-    "description": "For hyperjump planner",
-    "message": "Текущая система"
+    "description": "Label indicating the system the player currently occupies",
+    "message": "Current System"
   },
   "CUT": {
     "description": "As for clipboard",
@@ -414,6 +434,10 @@
   "DELETE": {
     "description": "",
     "message": "Удаление"
+  },
+  "DELETE_BOOKMARK": {
+    "description": "Button to remove a singular bookmark",
+    "message": "Delete Bookmark"
   },
   "DELETE_SAVE_CONFIRMATION": {
     "description": "",
@@ -527,6 +551,14 @@
     "description": "Tooltip, to edit a flight log entry",
     "message": "Редактировать запись"
   },
+  "EDIT_BOOKMARK": {
+    "description": "Button to edit a singular bookmark",
+    "message": "Edit Bookmark"
+  },
+  "EDIT_NOTE": {
+    "description": "",
+    "message": "Edit Note"
+  },
   "EFFECTS": {
     "description": "",
     "message": "Эффекты:"
@@ -570,6 +602,10 @@
   "ENGINEERING": {
     "description": "Engineering skills of crew",
     "message": "Инженерное дело"
+  },
+  "ENTER_CUSTOM_NOTE": {
+    "description": "Label indicating a note should be entered here",
+    "message": "Enter custom note..."
   },
   "ENTRY": {
     "description": "A note/entry/record into the flight log",
@@ -626,6 +662,10 @@
   "EXPERT": {
     "description": "For player reputation",
     "message": "Эксперт"
+  },
+  "FACTION": {
+    "description": "Label indicating the factional allegiance of an object",
+    "message": "Faction"
   },
   "FACTIONS": {
     "description": "Button to toggle the display of factions on the sector map",
@@ -693,7 +733,7 @@
   },
   "FINAL_TARGET": {
     "description": "Hyperjump planner, referring to star system target",
-    "message": "Конечная цель:"
+    "message": "Final Target"
   },
   "FINANCE": {
     "description": "Financial statement of player, e.g. cash",
@@ -1287,6 +1327,10 @@
     "description": "",
     "message": "Маршрут гиперпрыжков"
   },
+  "HYPERJUMP_ROUTING": {
+    "description": "Label indicating a category division",
+    "message": "HyperJump Routing"
+  },
   "HYPERSPACE_RANGE": {
     "description": "",
     "message": "Дальность гиперпрыжка"
@@ -1394,6 +1438,10 @@
   "KILLS": {
     "description": "",
     "message": "Побед:"
+  },
+  "KNOWN_AS": {
+    "description": "Indicates alternate names/aliases for an object",
+    "message": "Known as"
   },
   "LANGUAGE": {
     "description": "",
@@ -1763,6 +1811,10 @@
     "description": "Message displaying no stored data available",
     "message": "Данных нет"
   },
+  "NO_BOOKMARKS_FOUND": {
+    "description": "Label indicating a lack of bookmarks to display",
+    "message": "No Bookmarks Found"
+  },
   "NO_CARGO": {
     "description": "Message displayed when the player has no cargo in their hold.",
     "message": "НЕТ ГРУЗА"
@@ -2109,7 +2161,7 @@
   },
   "REQUIRED_FUEL": {
     "description": "Fuel usage for traveling to star system",
-    "message": "Требуется топлива:"
+    "message": "Required Fuel"
   },
   "RESET": {
     "description": "",
@@ -2263,6 +2315,10 @@
     "description": "",
     "message": "Задать пункт назначения как цель навигации."
   },
+  "SET_JUMP_TARGET": {
+    "description": "Button tooltip which sets the jump route to the selected body",
+    "message": "Set Jump Target"
+  },
   "SET_RETURN_ROUTE": {
     "description": "",
     "message": "Задать маршрут возвращения"
@@ -2334,6 +2390,22 @@
   "SOME_PARAMETERS_ARE_NOT_OK": {
     "description": "Diagnostics at game start",
     "message": "Некоторые параметры не в порядке:"
+  },
+  "SORT_COMMODITY": {
+    "description": "Indicates the list of objects should be sorted by commodity",
+    "message": "Commodity"
+  },
+  "SORT_DISTANCE": {
+    "description": "Indicates the list of objects should be sorted by distance",
+    "message": "Distance"
+  },
+  "SORT_MODE": {
+    "description": "Label indicating the current sorting mode of a list of objects",
+    "message": "Sort Mode"
+  },
+  "SORT_NAME": {
+    "description": "Indicates the list of objects should be sorted by name",
+    "message": "Наименование"
   },
   "SOUND": {
     "description": "",
@@ -2431,6 +2503,10 @@
     "description": "Message when restoring savegame",
     "message": "Индекс тела системы выходит за пределы допустимого диапазона"
   },
+  "SYSTEM_INFORMATION": {
+    "description": "Tooltip / label indicating information about a selected star system",
+    "message": "System Information"
+  },
   "TECH_CERTIFIED": {
     "description": "Lobby screen shows the tech level (an integer number) of the station",
     "message": "Эта станция имеет сертификацию {tech_level}-го технологического уровня."
@@ -2517,11 +2593,11 @@
   },
   "TOTAL_DISTANCE": {
     "description": "Total distance of a (possibly series) of hyper jump(s)",
-    "message": "Общее расстояние:"
+    "message": "Total Distance"
   },
   "TOTAL_DURATION": {
     "description": "Total duration of a (possibly series) of hyper jump(s)",
-    "message": "Общая продолжительность:"
+    "message": "Total Duration"
   },
   "TOTAL_MASS": {
     "description": "",
@@ -2578,6 +2654,10 @@
   "UNKNOWN_SYSTEM_LOG_ENTRY_FORMAT": {
     "description": "Message when restoring savegame",
     "message": "Неизвестный формат записи системного журнала"
+  },
+  "UNLAWFUL_ECM_DISCHARGE": {
+    "description": "",
+    "message": "Unlawful ECM discharge"
   },
   "UNLAWFUL_WEAPONS_DISCHARGE": {
     "description": "",

@@ -6,6 +6,7 @@ local ShipDef = require 'ShipDef'
 local ModelSpinner = require 'PiGui.Modules.ModelSpinner'
 local EquipCard = require 'pigui.libs.equip-card'
 local EquipSet  = require 'EquipSet'
+local PlayerState = require 'PlayerState'
 local pigui = require 'Engine'.pigui
 local Vector2 = Vector2
 
@@ -25,6 +26,7 @@ local pionillium = ui.fonts.pionillium
 
 local lineSpacing = ui.rescaleUI(Vector2(8, 6))
 local iconSize = Vector2(pionillium.body.size)
+local noSavedSettings = ui.WindowFlags { 'NoSavedSettings' }
 
 local equipmentInfoTab
 
@@ -62,7 +64,7 @@ function EquipmentWidget:onBuyItem(equip)
 		equip = equip:Instance()
 	end
 
-	player:AddMoney(-self.market:getBuyPrice(equip))
+	PlayerState.AddMoney(-self.market:getBuyPrice(equip))
 	self.station:AddEquipmentStock(equip:GetPrototype(), -1)
 
 	assert(self.ship:GetComponent("EquipSet"):Install(equip, self.selectedSlot))
@@ -78,7 +80,7 @@ function EquipmentWidget:onSellItem(equip)
 
 	local player = Game.player
 
-	player:AddMoney(self.market:getSellPrice(equip))
+	PlayerState.AddMoney(self.market:getSellPrice(equip))
 	self.station:AddEquipmentStock(equip:GetPrototype(), 1)
 
 	assert(self.ship:GetComponent("EquipSet"):Remove(equip))
@@ -564,7 +566,7 @@ end
 
 function EquipmentWidget:render()
 	ui.withFont(pionillium.body, function()
-		ui.child("ShipInfo", Vector2(ui.getContentRegion().x * 1 / 3, 0), { "NoSavedSettings" }, function()
+		ui.child("ShipInfo", Vector2(ui.getContentRegion().x * 1 / 3, 0), noSavedSettings, function()
 			if #self.tabs > 1 then
 				self.activeTab = ui.tabBarFont("##tabs", self.tabs, pionillium.heading, self)
 			else
