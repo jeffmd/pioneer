@@ -230,8 +230,8 @@ void StarSystemLegacyGeneratorBase::PickAtmosphere(SystemBody *sbody)
 		if (sbody->GetVolatileGas() > 0.001) {
 			if (atmo > 0.95) {
 				// o2
-				r = 1.0f + ((0.95f - atmo) * 15.0f);
-				g = 0.95f + ((0.95f - atmo) * 10.0f);
+				r = 1.0f + ((0.95f - atmo) * 10.0f);
+				g = 0.95f + ((0.95f - atmo) * 5.0f);
 				b = atmo * atmo * atmo * atmo * atmo;
 			} else if (atmo > 0.7) {
 				// co2
