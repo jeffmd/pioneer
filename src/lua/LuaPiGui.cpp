@@ -285,18 +285,28 @@ static LuaFlags<ImGuiCol_> imgui_col_enums = {
 	{ "ResizeGrip", ImGuiCol_ResizeGrip },
 	{ "ResizeGripHovered", ImGuiCol_ResizeGripHovered },
 	{ "ResizeGripActive", ImGuiCol_ResizeGripActive },
-	{ "Tab", ImGuiCol_Tab, },
 	{ "TabHovered", ImGuiCol_TabHovered, },
+	{ "Tab", ImGuiCol_Tab, },
 	{ "TabSelected", ImGuiCol_TabSelected, },
+	{ "TabSelectedOverline", ImGuiCol_TabSelectedOverline, },
 	{ "TabDimmed", ImGuiCol_TabDimmed, },
 	{ "TabDimmedSelected", ImGuiCol_TabDimmedSelected, },
+	{ "TabDimmedSelectedOverline", ImGuiCol_TabDimmedSelectedOverline, },
+	{ "DockingPreview", ImGuiCol_DockingPreview },
+	{ "DockingEmptyBg", ImGuiCol_DockingEmptyBg },
 	{ "PlotLines", ImGuiCol_PlotLines },
 	{ "PlotLinesHovered", ImGuiCol_PlotLinesHovered },
 	{ "PlotHistogram", ImGuiCol_PlotHistogram },
 	{ "PlotHistogramHovered", ImGuiCol_PlotHistogramHovered },
+	{ "TableHeaderBg", ImGuiCol_TableHeaderBg },
+	{ "TableBorderStrong", ImGuiCol_TableBorderStrong },
+	{ "TableBorderLight", ImGuiCol_TableBorderLight },
+	{ "TableRowBg", ImGuiCol_TableRowBg },
+	{ "TableRowBgAlt", ImGuiCol_TableRowBgAlt },
+	{ "TextLink", ImGuiCol_TextLink },
 	{ "TextSelectedBg", ImGuiCol_TextSelectedBg },
 	{ "DragDropTarget", ImGuiCol_DragDropTarget, },
-	{ "NavHighlight", ImGuiCol_NavHighlight, },
+	{ "NavCursor", ImGuiCol_NavCursor, },
 	{ "NavWindowingHighlight", ImGuiCol_NavWindowingHighlight, },
 	{ "NavWindowingDimBg", ImGuiCol_NavWindowingDimBg, },
 	{ "ModalWindowDimBg", ImGuiCol_ModalWindowDimBg, },
@@ -1677,9 +1687,10 @@ static int l_pigui_add_rect(lua_State *l)
 	ImVec2 b = LuaPull<ImVec2>(l, 2);
 	ImU32 color = ImGui::GetColorU32(LuaPull<ImColor>(l, 3).Value);
 	float rounding = LuaPull<double>(l, 4);
-	int round_corners = LuaPull<int>(l, 5);
+	// Convert from the legacy values used in LUA to the new Dear ImGui v1.91 values
+	ImDrawFlags draw_flags = (LuaPull<int>(l, 5) & 0x0F) << 4;
 	float thickness = LuaPull<double>(l, 6);
-	draw_list->AddRect(a, b, color, rounding, round_corners, thickness);
+	draw_list->AddRect(a, b, color, rounding, draw_flags, thickness);
 	return 0;
 }
 
@@ -1738,8 +1749,9 @@ static int l_pigui_add_rect_filled(lua_State *l)
 	ImVec2 b = LuaPull<ImVec2>(l, 2);
 	ImU32 color = ImGui::GetColorU32(LuaPull<ImColor>(l, 3).Value);
 	float rounding = LuaPull<double>(l, 4);
-	int round_corners = LuaPull<int>(l, 5);
-	draw_list->AddRectFilled(a, b, color, rounding, round_corners);
+	// Convert from the legacy values used in LUA to the new Dear ImGui v1.91 values
+	ImDrawFlags draw_flags = (LuaPull<int>(l, 5) & 0x0F) << 4;
+	draw_list->AddRectFilled(a, b, color, rounding, draw_flags);
 	return 0;
 }
 
@@ -1779,19 +1791,20 @@ static int l_pigui_add_rect_faded(lua_State *l)
 	ImU32 color = ImGui::GetColorU32(LuaPull<ImColor>(l, 3).Value);
 	ImColor color_b { color };
 	color_b.Value.w = LuaPull<double>(l, 4);
-	ImDrawFlags round_corners = (LuaPull<int>(l, 5) & 0x0F) << 4;
+	// Convert from the legacy values used in LUA to the new Dear ImGui v1.91 values
+	ImDrawFlags draw_flags = (LuaPull<int>(l, 5) & 0x0F) << 4;
 
 	draw_list->PrimReserve(6, 4);
 	ImDrawVert *vertices = draw_list->_VtxWritePtr;
 	draw_list->PrimRect(a, b, color);
 
-	if (round_corners & ImDrawFlags_RoundCornersTopLeft)
+	if (draw_flags & ImDrawFlags_RoundCornersTopLeft)
 		vertices[0].col = color_b;
-	if (round_corners & ImDrawFlags_RoundCornersTopRight)
+	if (draw_flags & ImDrawFlags_RoundCornersTopRight)
 		vertices[1].col = color_b;
-	if (round_corners & ImDrawFlags_RoundCornersBottomRight)
+	if (draw_flags & ImDrawFlags_RoundCornersBottomRight)
 		vertices[2].col = color_b;
-	if (round_corners & ImDrawFlags_RoundCornersBottomLeft)
+	if (draw_flags & ImDrawFlags_RoundCornersBottomLeft)
 		vertices[3].col = color_b;
 
 	return 0;

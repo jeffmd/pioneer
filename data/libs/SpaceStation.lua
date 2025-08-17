@@ -992,7 +992,7 @@ end
 
 ensureStationData = function (station)
 	if not visited[station] or not equipmentStock[station] then
-		logWarning("Creating station data for station " .. station.label .. " before onShipDocked event is processed for that station")
+		logWarning("Creating station data for station " .. station.label .. " before onPlayerDocked event is processed for that station")
 		logVerbose(debug.dumpstack(2))
 
 		createStationData(station)
@@ -1063,9 +1063,7 @@ Event.Register("onGameStart", function ()
 	Timer:CallEvery(3600, updateSystem)
 end)
 
-Event.Register("onShipDocked", function (ship, station)
-	if ship ~= Game.player then return end
-
+Event.Register("onPlayerDocked", function (ship, station)
 	if not visited[station] then
 		createStationData(station)
 	else
@@ -1074,7 +1072,6 @@ Event.Register("onShipDocked", function (ship, station)
 end)
 
 Event.Register("onLeaveSystem", function (ship)
-	if ship ~= Game.player then return end
 	destroySystem()
 end)
 

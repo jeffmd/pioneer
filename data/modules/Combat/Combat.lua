@@ -424,8 +424,6 @@ local finishMission = function (ref, mission)
 end
 
 local onEnterSystem = function (player)
-	if not player:IsPlayer() then return end
-
 	for ref, mission in pairs(missions) do
 		if mission.rendezvous and mission.rendezvous:IsSameSystem(Game.system.path) then
 			if mission.complete or Game.time > mission.due then
@@ -449,19 +447,15 @@ local onEnterSystem = function (player)
 end
 
 local onLeaveSystem = function (ship)
-	if ship:IsPlayer() then
-		for _, f in pairs(flavours) do
-			f.planets = nil
-		end
-		for ref, mission in pairs(missions) do
-			mission.mercenaries = {}
-		end
+	for _, f in pairs(flavours) do
+		f.planets = nil
+	end
+	for ref, mission in pairs(missions) do
+		mission.mercenaries = {}
 	end
 end
 
-local onShipDocked = function (player, station)
-	if not player:IsPlayer() then return end
-
+local onPlayerDocked = function (player, station)
 	for ref, mission in pairs(missions) do
 		if not mission.rendezvous and (mission.flavour.is_multi or mission.faction == Game.system.faction.id) then
 			finishMission(ref, mission)
@@ -564,7 +558,7 @@ Event.Register("onUpdateBB", onUpdateBB)
 Event.Register("onEnterSystem", onEnterSystem)
 Event.Register("onFrameChanged", onFrameChanged)
 Event.Register("onLeaveSystem", onLeaveSystem)
-Event.Register("onShipDocked", onShipDocked)
+Event.Register("onPlayerDocked", onPlayerDocked)
 Event.Register("onShipDestroyed", onShipDestroyed)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)

@@ -583,7 +583,6 @@ end
 
 
 local onEnterSystem = function (playership)
-	if not playership:IsPlayer() then return end
 	nearbysystems = nil
 
 	for ref,mission in pairs(missions) do
@@ -674,8 +673,7 @@ end
 
 ---@param player Player
 ---@param station SpaceStation
-local onShipDocked = function (player, station)
-	if not player:IsPlayer() then return end
+local onPlayerDocked = function (player, station)
 	local scanMgr = player:GetComponent("ScanManager")
 
 	for ref, mission in pairs(missions) do
@@ -827,7 +825,7 @@ Event.Register("onGameEnd", onGameEnd)
 Event.Register("onCreateBB", onCreateBB)
 Event.Register("onUpdateBB", onUpdateBB)
 Event.Register("onEnterSystem", onEnterSystem)
-Event.Register("onShipDocked", onShipDocked)
+Event.Register("onPlayerDocked", onPlayerDocked)
 
 Event.Register("onScanRangeEnter", onScanRangeEnter)
 Event.Register("onScanRangeExit", onScanRangeExit)

@@ -346,22 +346,16 @@ end
 
 -- onLeaveSystem
 local AddSystemDepartureToLog = function (ship)
-	if not ship:IsPlayer() then return end
-
 	FlightLog.AddEntry( FlightLogEntry.System.New( Game.system.path, nil, Game.time, nil ) )
 end
 
 -- onEnterSystem
 local AddSystemArrivalToLog = function (ship)
-	if not ship:IsPlayer() then return end
-
 	FlightLog.AddEntry( FlightLogEntry.System.New( Game.system.path, Game.time, nil, nil ) )
 end
 
--- onShipDocked
+-- onPlayerDocked
 local AddStationToLog = function (ship, station)
-	if not ship:IsPlayer() then return end
-
 	FlightLog.AddEntry( FlightLogEntry.Station.New( station.path, Game.time, PlayerState.GetMoney(), nil ) )
 end
 
@@ -413,7 +407,7 @@ end
 
 Event.Register("onEnterSystem", AddSystemArrivalToLog)
 Event.Register("onLeaveSystem", AddSystemDepartureToLog)
-Event.Register("onShipDocked", AddStationToLog)
+Event.Register("onPlayerDocked", AddStationToLog)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)
 Serializer:Register("FlightLog", serialize, unserialize)

@@ -405,7 +405,7 @@
   },
   "FLAVOUR_7_SUCCESSMSG": {
     "description": "",
-    "message": "Благодаря Ви! Упълномощен съм да Ви предам цялото заплащане."
+    "message": "Благодаря Ви! Упълномощен съм да Ви преведа цялото заплащане."
   },
   "FLAVOUR_7_TRANSFERMSG": {
     "description": "",
@@ -713,7 +713,7 @@
   },
   "TONS_OF_FREE_CARGO_SPACE": {
     "description": "",
-    "message": "тона свободно товарно пространство"
+    "message": "тона свободно товарно място"
   },
   "TRANSFER_ABORTED": {
     "description": "",

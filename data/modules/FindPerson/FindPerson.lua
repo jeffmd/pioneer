@@ -309,8 +309,6 @@ local onFrameChanged = function (player)
 end
 
 local onEnterSystem = function (player)
-	if not player:IsPlayer() then return end
-
 	for ref, mission in pairs(missions) do
 		if mission.destination:IsSameSystem(Game.system.path) and mission.status == "ACTIVE" and mission.flavour.ship then
 
@@ -352,9 +350,7 @@ local onEnterSystem = function (player)
 	end
 end
 
-local onShipDocked = function (player, station)
-	if not player:IsPlayer() then return end
-
+local onPlayerDocked = function (player, station)
 	for ref, mission in pairs(missions) do
 		local msg
 
@@ -432,9 +428,7 @@ local onShipDocked = function (player, station)
 	end
 end
 
-local onShipUndocked = function (player, station)
-	if not player:IsPlayer() then return end
-
+local onPlayerUndocked = function (player, station)
 	for ref, mission in pairs(missions) do
 		if mission.interceptor then
 			mission.interceptor:AIKill(player)
@@ -443,12 +437,10 @@ local onShipUndocked = function (player, station)
 end
 
 local onLeaveSystem = function (ship)
-	if ship:IsPlayer() then
-		nearbysystems = nil
-		for ref, mission in pairs(missions) do
-			mission.ship = nil
-			mission.interceptor = nil
-		end
+	nearbysystems = nil
+	for ref, mission in pairs(missions) do
+		mission.ship = nil
+		mission.interceptor = nil
 	end
 end
 
@@ -537,8 +529,8 @@ Event.Register("onUpdateBB", onUpdateBB)
 Event.Register("onFrameChanged", onFrameChanged)
 Event.Register("onEnterSystem", onEnterSystem)
 Event.Register("onLeaveSystem", onLeaveSystem)
-Event.Register("onShipDocked", onShipDocked)
-Event.Register("onShipUndocked", onShipUndocked)
+Event.Register("onPlayerDocked", onPlayerDocked)
+Event.Register("onPlayerUndocked", onPlayerUndocked)
 Event.Register("onShipFiring", onShipFiring)
 Event.Register("onShipHit", onShipHit)
 Event.Register("onShipDestroyed", onShipDestroyed)

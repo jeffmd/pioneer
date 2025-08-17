@@ -14,6 +14,7 @@
 #include "graphics/Material.h"
 #include "graphics/RenderState.h"
 #include "graphics/Renderer.h"
+#include "graphics/VertexBuffer.h"
 #include "perlin.h"
 
 using namespace Graphics;
@@ -50,13 +51,13 @@ HyperspaceCloud::HyperspaceCloud(const Json &jsonObj, Space *space) :
 		m_vel = hyperspaceCloudObj["vel"];
 		m_birthdate = hyperspaceCloudObj["birth_date"];
 		m_due = hyperspaceCloudObj["due"];
-		m_isArrival = hyperspaceCloudObj["is_arrival"];
 
 		m_ship = nullptr;
 		if (hyperspaceCloudObj["ship"].is_object()) {
 			Json shipObj = hyperspaceCloudObj["ship"];
 			m_ship = static_cast<Ship *>(Body::FromJson(shipObj, space));
 		}
+		SetIsArrival(hyperspaceCloudObj["is_arrival"]);
 	} catch (Json::type_error &) {
 		throw SavedGameCorruptException();
 	}
@@ -70,7 +71,11 @@ HyperspaceCloud::~HyperspaceCloud()
 void HyperspaceCloud::SetIsArrival(bool isArrival)
 {
 	m_isArrival = isArrival;
-	SetLabel(isArrival ? Lang::HYPERSPACE_ARRIVAL_CLOUD : Lang::HYPERSPACE_DEPARTURE_CLOUD);
+	if (!m_ship) {
+		SetLabel(Lang::HYPERSPACE_ARRIVAL_CLOUD_REMNANT);
+	} else {
+		SetLabel(isArrival ? Lang::HYPERSPACE_ARRIVAL_CLOUD : Lang::HYPERSPACE_DEPARTURE_CLOUD);
+	}
 }
 
 void HyperspaceCloud::SaveToJson(Json &jsonObj, Space *space)
@@ -121,6 +126,7 @@ void HyperspaceCloud::TimeStepUpdate(const float timeStep)
 		m_ship->EnterSystem();
 
 		m_ship = nullptr;
+		SetLabel(Lang::HYPERSPACE_ARRIVAL_CLOUD_REMNANT);
 	}
 
 	// cloud expiration
@@ -135,6 +141,7 @@ Ship *HyperspaceCloud::EvictShip()
 {
 	Ship *s = m_ship;
 	m_ship = nullptr;
+	SetLabel(Lang::HYPERSPACE_ARRIVAL_CLOUD_REMNANT);
 	return s;
 }
 
@@ -184,6 +191,8 @@ void HyperspaceCloud::Render(Renderer *renderer, const Camera *camera, const vec
 
 void HyperspaceCloud::InitGraphics(Graphics::Renderer *renderer)
 {
+	Graphics::VertexArray vertices(ATTRIB_POSITION | ATTRIB_DIFFUSE);
+
 	Graphics::MaterialDescriptor desc;
 	desc.vertexColors = true;
 
@@ -191,9 +200,9 @@ void HyperspaceCloud::InitGraphics(Graphics::Renderer *renderer)
 	rsd.blendMode = BLEND_ALPHA_ONE;
 	rsd.depthWrite = false;
 	rsd.primitiveType = Graphics::TRIANGLE_FAN;
-	s_cloudMat.reset(renderer->CreateMaterial("unlit", desc, rsd));
 
-	Graphics::VertexArray vertices(ATTRIB_POSITION | ATTRIB_DIFFUSE);
+	auto vtxFormat = Graphics::VertexFormatDesc::FromAttribSet(vertices.GetAttributeSet());
+	s_cloudMat.reset(renderer->CreateMaterial("unlit", desc, rsd, vtxFormat));
 
 	const Color edgeArrivingColour(Color::BLUE, 0); // alpha needs to be zero'd
 	make_circle_thing(vertices, 1000.f, Color::WHITE, edgeArrivingColour);

@@ -325,8 +325,6 @@ local onUpdateBB = function (station)
 end
 
 local onEnterSystem = function (player)
-	if (not player:IsPlayer()) then return end
-
 	local syspath = Game.system.path
 
 	for ref,mission in pairs(missions) do
@@ -386,14 +384,10 @@ local onEnterSystem = function (player)
 end
 
 local onLeaveSystem = function (ship)
-	if ship:IsPlayer() then
-		nearbysystems = nil
-	end
+	nearbysystems = nil
 end
 
-local onShipDocked = function (player, station)
-	if not player:IsPlayer() then return end
-
+local onPlayerDocked = function (player, station)
 	for ref,mission in pairs(missions) do
 		if mission.location == Game.system.path or Game.time > mission.due then
 			local oldReputation = Character.persistent.player.reputation
@@ -417,9 +411,7 @@ local onShipDocked = function (player, station)
 end
 
 ---@param player Player
-local onShipUndocked = function (player, station)
-	if not player:IsPlayer() then return end
-
+local onPlayerUndocked = function (player, station)
 	for ref,mission in pairs(missions) do
         local numPassengers = Passengers.CheckEmbarked(player, mission.group)
 
@@ -510,8 +502,8 @@ Event.Register("onCreateBB", onCreateBB)
 Event.Register("onUpdateBB", onUpdateBB)
 Event.Register("onEnterSystem", onEnterSystem)
 Event.Register("onLeaveSystem", onLeaveSystem)
-Event.Register("onShipUndocked", onShipUndocked)
-Event.Register("onShipDocked", onShipDocked)
+Event.Register("onPlayerUndocked", onPlayerUndocked)
+Event.Register("onPlayerDocked", onPlayerDocked)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)
 Event.Register("onReputationChanged", onReputationChanged)

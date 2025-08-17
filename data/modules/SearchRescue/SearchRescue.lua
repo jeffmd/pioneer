@@ -1911,9 +1911,8 @@ end
 
 ---@param ship Ship
 ---@param station SpaceStation?
-local onShipUndocked = function (ship, station)
+local onPlayerUndocked = function (ship, station)
 	-- Start search immediately if the target is on the same planet as the station.
-	if not ship:IsPlayer() then return end
 	for _,mission in pairs(missions) do
 		if mission.target and ship.frameBody == mission.target.frameBody then
 			searchForTarget(mission)
@@ -1985,7 +1984,6 @@ local onUpdateBB = function (station)
 end
 
 local onEnterSystem = function (player)
-	if (not player:IsPlayer()) then return end
 	leaving_system = false
 
 	local syspath = Game.system.path
@@ -2001,21 +1999,19 @@ local onEnterSystem = function (player)
 end
 
 local onLeaveSystem = function (ship)
-	if ship:IsPlayer() then
-		leaving_system = true    --checked by searchForTarget to abort search
+	leaving_system = true    --checked by searchForTarget to abort search
 
-		local syspath = Game.system.path
+	local syspath = Game.system.path
 
-		-- remove references to ships that are left behind (cause serialization crash otherwise)
-		for _,mission in pairs(missions) do
-			if mission.system_target:IsSameSystem(syspath) then
-				mission.target = nil
-			end
+	-- remove references to ships that are left behind (cause serialization crash otherwise)
+	for _,mission in pairs(missions) do
+		if mission.system_target:IsSameSystem(syspath) then
+			mission.target = nil
 		end
-
-		discarded_ships = {}
-		-- TODO: put in tracker to recreate mission targets (already transferred personnel, cargo, etc.)
 	end
+
+	discarded_ships = {}
+	-- TODO: put in tracker to recreate mission targets (already transferred personnel, cargo, etc.)
 end
 
 ---@param ship Ship
@@ -2218,8 +2214,8 @@ Event.Register("onShipDocked", onShipDocked)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)
 Event.Register("onReputationChanged", onReputationChanged)
-Event.Register("onShipUndocked", onShipUndocked)
-Event.Register("onShipTakeOff", onShipUndocked)
+Event.Register("onPlayerUndocked", onPlayerUndocked)
+Event.Register("onPlayerTakeOff", onPlayerUndocked)
 Event.Register("onFrameChanged", onFrameChanged)
 Event.Register("onShipDestroyed", onShipDestroyed)
 

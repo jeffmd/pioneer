@@ -104,9 +104,7 @@ local onGameStart = function ()
 end
 
 local onEnterSystem = function (ship)
-	if ship == Game.player then
-		Game.systemView:SetVisibility("RESET_VIEW");
-	end
+	Game.systemView:SetVisibility("RESET_VIEW");
 end
 
 local function textIcon(icon, tooltip)
@@ -471,7 +469,7 @@ local function drawAtlasBodyLabel(label, screenSize, mainCoords, isHovered, isSe
 
 	-- draw a background behind the label, then an indicator line
 	if isHovered then
-		ui.addRectFilled(lineEndPos - Vector2(0, -atlas_label_offset.y + textSize.y), underlinePos, colors.lightBlackBackground, 4, 0)
+		ui.addRectFilled(lineEndPos - Vector2(0, -atlas_label_offset.y + textSize.y), underlinePos, colors.lightBlackBackground, 4, ui.RoundCornersNone)
 		ui.addLine(lineStartPos, lineEndPos, lineColor, 2)
 		ui.addLine(lineEndPos, underlinePos, lineColor, 3)
 	end

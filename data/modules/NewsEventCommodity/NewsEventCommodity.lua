@@ -304,8 +304,6 @@ end
 local timeInHyperspace
 
 local onEnterSystem = function (player)
-	if (not player:IsPlayer()) then return end
-
 	-- remove old news before making new
 	checkOldNews()
 
@@ -322,15 +320,13 @@ end
 
 
 local onLeaveSystem = function (ship)
-	if not ship:IsPlayer() then return end
 	nearbySystems = nil
 	timeInHyperspace = Game.time
 end
 
 local cache = nil
 
-local onShipDocked = function (ship, station)
-	if not ship:IsPlayer() then return end
+local onPlayerDocked = function (ship, station)
 
 	-- remove expired news from the news table
 	checkOldNews()
@@ -386,9 +382,7 @@ end
 -- Reset when we leave the station. With current implementation of
 -- economy, it would gradually have returned to equilibrium in 12
 -- weeks time.
-local onShipUndocked = function (ship, station)
-	if not ship:IsPlayer() then return end
-
+local onPlayerUndocked = function (ship, station)
 	if cache then
 		station:SetCommodityPrice(cache.commodity, cache.price)
 		station:SetCommodityStock(cache.commodity, cache.stock, cache.demand)
@@ -449,8 +443,8 @@ end
 Event.Register("onCreateBB", onCreateBB)
 Event.Register("onEnterSystem", onEnterSystem)
 Event.Register("onLeaveSystem", onLeaveSystem)
-Event.Register("onShipDocked", onShipDocked)
-Event.Register("onShipUndocked", onShipUndocked)
+Event.Register("onPlayerDocked", onPlayerDocked)
+Event.Register("onPlayerUndocked", onPlayerUndocked)
 Event.Register("onGameStart", onGameStart)
 Event.Register("onGameEnd", onGameEnd)
 
