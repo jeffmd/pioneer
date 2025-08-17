@@ -3,6 +3,7 @@ tex_diff diffuse.dds
 tex_spec specular.dds
 tex_glow glow.dds
 tex_norm normal.dds
+tex_enviro enviro1.dds
 diffuse 1.0 1.0 1.0
 specular 0.6 0.6 0.8
 shininess 40

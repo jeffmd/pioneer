@@ -7,6 +7,7 @@ tex_diff bowfin_diff.dds
 #tex_glow bowfin_glow.dds
 tex_spec bowfin_spec.dds
 tex_norm bowfin_norm.dds
+tex_enviro enviro1.dds
 
 material Canopy
 diffuse 1.0 1.0 1.0
@@ -17,7 +18,8 @@ opacity 46
 tex_diff bowfin_diff.dds
 tex_glow bowfin_glow.dds
 tex_spec bowfin_spec.dds
-#tex_norm bowfin_norm.dds
+tex_norm bowfin_norm.dds
+tex_enviro enviro1.dds
 
 
 lod 300

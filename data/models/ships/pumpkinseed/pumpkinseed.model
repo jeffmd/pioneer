@@ -7,6 +7,7 @@ tex_diff pumpkinseed_diff.dds
 tex_glow pumpkinseed_glow.dds
 tex_spec pumpkinseed_spec.dds
 tex_norm pumpkinseed_norm.dds
+tex_enviro enviro1.dds
 
 lod 50
 mesh pumpkinseed_3low.dae

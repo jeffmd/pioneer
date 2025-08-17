@@ -29,6 +29,9 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 	const std::string &ambiTex = mdef.tex_ambi;
 	const std::string &normTex = mdef.tex_norm;
 	const std::string &pbrTex = mdef.tex_pbr;
+	const std::string &enviroTex = mdef.tex_enviro;
+	
+	static const std::string enviroTextureFilename("textures/enviro1.dds");
 
 	Graphics::MaterialDescriptor matDesc;
 	matDesc.lighting = !mdef.unlit;
@@ -43,6 +46,7 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 	matDesc.ambientMap = !ambiTex.empty();
 	matDesc.normalMap = !normTex.empty();
 	matDesc.pbrMap = !pbrTex.empty();
+	matDesc.enviroMap = !enviroTex.empty();
 	matDesc.quality = Graphics::HAS_HEAT_GRADIENT;
 
 	// FIXME: add render state properties to MaterialDefinition
@@ -84,6 +88,8 @@ void BaseLoader::ConvertMaterialDefinition(const MaterialDefinition &mdef)
 		texture2 = Graphics::TextureBuilder::Model(glowTex).GetOrCreateTexture(m_renderer, "model");
 	if (!ambiTex.empty())
 		texture3 = Graphics::TextureBuilder::Model(ambiTex).GetOrCreateTexture(m_renderer, "model");
+	if (!enviroTex.empty())
+		texture3 = Graphics::TextureBuilder::Model(enviroTextureFilename).GetOrCreateTexture(m_renderer, "model");
 	//texture4 is reserved for pattern
 	//texture5 is reserved for color gradient
 	if (!normTex.empty())

@@ -8,6 +8,7 @@ tex_diff molaramsayi_diff.dds
 tex_spec molaramsayi_spec.dds
 tex_glow molaramsayi_glow.dds
 tex_norm molaramsayi_norm.dds
+tex_enviro enviro1.dds
 
 lod 300
 mesh molaramsayi_hi.dae

@@ -4,6 +4,7 @@ tex_diff ac33.dds
 tex_spec ac33_spec.dds
 tex_glow ac33_glow.dds
 tex_norm ac33_norm.dds
+tex_enviro enviro1.dds
 
 use_patterns
 

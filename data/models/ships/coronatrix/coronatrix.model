@@ -6,6 +6,7 @@ tex_diff coronatrix_diff.dds
 tex_spec coronatrix_spec.dds
 tex_norm coronatrix_norm.png
 tex_glow coronatrix_glow.dds
+tex_enviro enviro1.dds
 use_patterns
 
 material Coronatrix-canopy
@@ -17,6 +18,7 @@ tex_diff coronatrix_diff.dds
 tex_spec coronatrix_spec.dds
 tex_norm coronatrix_norm.png
 tex_glow coronatrix_glow.dds
+tex_enviro enviro1.dds
 
 material Coronatrix-parts
 diffuse 1.0 1.0 1.0
@@ -26,6 +28,7 @@ tex_diff parts_diff.dds
 tex_spec parts_spec.dds
 tex_norm parts_norm.png
 tex_glow parts_glow.dds
+tex_enviro enviro1.dds
 
 lod 300
 mesh coronatrix_hi.dae

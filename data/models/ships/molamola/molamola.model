@@ -7,7 +7,7 @@ tex_diff molamola_diff.dds
 tex_glow molamola_glow.dds
 tex_spec molamola_spec.dds
 tex_norm molamola_norm.dds
-
+tex_enviro enviro1.dds
 
 lod 300
 mesh molamola_1hi.dae

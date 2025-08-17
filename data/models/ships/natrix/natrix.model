@@ -6,6 +6,7 @@ tex_diff natrix_diff.dds
 tex_spec natrix_spec.dds
 tex_norm natrix_norm.png
 tex_glow natrix_glow.dds
+tex_enviro enviro1.dds
 use_patterns
 
 material Natrix-headlight
@@ -17,6 +18,7 @@ tex_diff natrix_diff.dds
 tex_spec natrix_spec.dds
 tex_norm natrix_norm.png
 tex_glow natrix_glow.dds
+tex_enviro enviro1.dds
 
 material Natrix-canopy
 diffuse 1.0 1.0 1.0
@@ -27,6 +29,7 @@ tex_diff natrix_diff.dds
 tex_spec natrix_spec.dds
 tex_norm natrix_norm.png
 tex_glow natrix_glow.dds
+tex_enviro enviro1.dds
 	
 lod 300
 mesh natrix_1_high.dae

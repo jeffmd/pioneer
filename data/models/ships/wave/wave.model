@@ -7,6 +7,8 @@ shininess 100
 tex_diff wave.dds
 tex_spec wave_spec.dds
 tex_norm wave_norm.dds
+tex_enviro enviro1.dds
+
 use_patterns
 
 material glow

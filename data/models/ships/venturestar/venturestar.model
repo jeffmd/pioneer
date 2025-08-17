@@ -4,6 +4,7 @@ tex_diff venturestar.dds
 tex_spec venturestar_spec.dds
 tex_glow venturestar_glow.dds
 tex_norm venturestar_norm.dds
+tex_enviro enviro1.dds
 
 use_patterns
 

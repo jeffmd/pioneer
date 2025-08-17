@@ -6,6 +6,7 @@ tex_diff bluenose_diff.dds
 tex_spec bluenose_spec.dds
 tex_glow bluenose_glow.dds
 tex_norm bluenose_norm.png
+tex_enviro enviro1.dds
 
 lod 300
 mesh bluenose_hi.dae

@@ -208,6 +208,8 @@ namespace SceneGraph {
 						return checkTexture(ss, m_curMat->tex_norm);
 					else if (match(token, "tex_pbr"))
 						return checkTexture(ss, m_curMat->tex_pbr);
+					else if (match(token, "tex_enviro"))
+						return checkTexture(ss, m_curMat->tex_enviro);
 					else if (match(token, "diffuse"))
 						return checkColor(ss, m_curMat->diffuse);
 					else if (match(token, "specular"))

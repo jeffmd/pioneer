@@ -7,6 +7,7 @@ tex_diff kanara_civ_diff.dds
 tex_glow kanara_glow.dds
 tex_spec kanara_spec.dds
 tex_norm kanara_norm.dds
+tex_enviro enviro1.dds
 
 lod 300
 mesh kanara_hi.dae

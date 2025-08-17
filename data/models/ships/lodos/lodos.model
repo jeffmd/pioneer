@@ -5,6 +5,7 @@ use_patterns
 tex_diff lodos-diffuse.dds
 tex_spec lodos-specular.dds
 tex_glow lodos-glow.dds
+tex_enviro enviro1.dds
 
 mesh lodos-hi.dae
 

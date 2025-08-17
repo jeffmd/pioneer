@@ -5,6 +5,7 @@ tex_diff lunarshuttle_diff.dds
 tex_spec lunarshuttle_spec.dds
 tex_glow lunarshuttle_glow.dds
 tex_norm lunarshuttle_norm.dds
+tex_enviro enviro1.dds
 diffuse 0.75 0.75 0.75
 specular 0.2 0.2 0.2
 use_patterns

@@ -23,6 +23,7 @@ namespace SceneGraph {
 			tex_ambi(""),
 			tex_norm(""),
 			tex_pbr(""),
+			tex_enviro(""),
 			diffuse(Color::WHITE),
 			specular(Color::WHITE),
 			ambient(Color::BLANK),
@@ -40,6 +41,7 @@ namespace SceneGraph {
 		std::string tex_ambi;
 		std::string tex_norm;
 		std::string tex_pbr;
+		std::string tex_enviro;
 		Color diffuse;
 		Color specular;
 		Color ambient;

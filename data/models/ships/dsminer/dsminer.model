@@ -3,6 +3,8 @@ tex_diff dsminer_diff.dds
 tex_spec dsminer_spec.dds
 tex_glow dsminer_glow.dds
 tex_norm dsminer_norm.dds
+tex_enviro enviro1.dds
+
 use_patterns
 diffuse 1.0 1.0 1.0
 specular 1.0 1.0 1.0

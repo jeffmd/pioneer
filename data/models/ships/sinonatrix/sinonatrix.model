@@ -6,6 +6,8 @@ tex_diff fuselage_diff.dds
 tex_spec fuselage_spec.dds
 tex_norm fuselage_norm.png
 tex_glow fuselage_glow.dds
+tex_enviro enviro1.dds
+
 use_patterns
 
 material Canopy
@@ -17,6 +19,7 @@ tex_diff fuselage_diff.dds
 tex_spec fuselage_spec.dds
 tex_norm fuselage_norm.png
 tex_glow fuselage_glow.dds
+tex_enviro enviro1.dds
 
 material Engine
 diffuse 1.0 1.0 1.0
@@ -26,6 +29,7 @@ tex_diff engine_diff.dds
 tex_spec engine_spec.dds
 tex_norm engine_norm.png
 tex_glow engine_glow.dds
+tex_enviro enviro1.dds
 
 lod 300
 mesh sinonatrix_hi.dae
