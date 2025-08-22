@@ -142,12 +142,12 @@ void main(void)
 	vec3 V = normalize(-eyePos);
 
 #ifdef USE_PBR
-	vec3 ambient = diffuse * 1.5;
+	vec3 ambient = diffuse;
 	ambient = min(ambient, 0.6);
 	// add hemisphere lighting
 	// add hemishpere specular at glancing angles for all surfaces including glass
 	vec3 specRefl = reflect(-V, surface.normal);
-	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.2;
+	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.5;
 	
 #ifdef MAP_ENVIRO
 	// Image Base lighting using environment map
@@ -158,7 +158,7 @@ void main(void)
 	float u = 0.5 - 0.5 * Reflview.y;
 	// level of detail or bluriness ranging from 0 to 10 controlled by smoothness
 	float lod = 10.0 * (1.0 - smoothness);
-	vec3 ambRefl = textureLod(texture3, vec2(u, v), lod).rgb;
+	vec3 ambRefl = Ka * textureLod(texture3, vec2(u, v), lod).rgb;
 #else
 	// ground reflectance
 	float Rground = (2.0 - Ka) * 0.5;
@@ -177,6 +177,10 @@ void main(void)
 	// decals have alpha of 0 for non colored areas
 	surface.color.a += surface.color.a * glassAlpha * (1.0 - aNdotV);
 
+	// modulate image based lighting reflection using ambient
+	// this will not be required when IBL becomes dynamic real time
+	ambRefl *= ambient;
+
 	// hemisphere diffuse  (multiple lights) 
 	// provides diffuse lighting from front, left, right, bottom, and top
 #ifdef MAP_ENVIRO
@@ -184,16 +188,15 @@ void main(void)
 	Reflview = (mat3(uViewMatrixInverse)) * surface.normal;
 	v = 0.5 - 0.5 * Reflview.z;
 	u = 0.5 - 0.5 * Reflview.y;
-	// modulate reflection using ambient
-	ambRefl *= ambient;
 	// use a high lod so image is blurred to simulate diffuse
-	ambRefl += 0.25 * (ambient + textureLod(texture3, vec2(u, v), 6).rgb);
-	ambRefl *= Ka;
+	diffuse = 0.25 * Ka * (ambient + textureLod(texture3, vec2(u, v), 6).rgb);
+#else
+	diffuse = ambient * Ka;
 #endif
 
-	diffuse = ambRefl;
 	// metal effect for hemi diffuse
 	diffuse *= (1.0 - surface.metallic);
+	diffuse += ambRefl;
 	
 #endif
 
@@ -233,9 +236,10 @@ void main(void)
 	diffuse += brdf * max(SGInnerProduct(atmosphereLobe, cosineLobe), 0.0);
 #endif
 
-	vec3 final_color = (diffuse * surface.color.xyz) * surface.ambientOcclusion + specular;
+	vec3 final_color = diffuse * surface.color.xyz * surface.ambientOcclusion + specular;
 
 #ifdef USE_PBR
+	final_color += ambRefl;
 	final_color += hemiSpecFresnel;
 	// gamma correction
 	//final_color *= 2.5 / PI;
@@ -243,7 +247,7 @@ void main(void)
 	// emmission
 #ifdef USE_PBR
 	float amb = 0.33 * (ambient.x + ambient.y + ambient.z);
-	surface.emissive = 25.0 * (0.13 - min(amb, 0.115)) * surface.emissive; //glow map
+	surface.emissive = 25.0 * (0.10 - min(amb, 0.085)) * surface.emissive; //glow map
 #endif
 	final_color += surface.emissive;
 	frag_color = vec4(final_color, surface.color.w);
