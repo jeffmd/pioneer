@@ -147,15 +147,15 @@ void main(void)
 	// add hemisphere lighting
 	// add hemishpere specular at glancing angles for all surfaces including glass
 	vec3 specRefl = reflect(-V, surface.normal);
-	float Ka = mix(specRefl.y, surface.normal.y, surface.roughness) + 1.5;
-	
+	float Ka = mix(surface.normal.y, specRefl.y, surface.roughness) + (1.0 + surface.roughness);
+
 #ifdef MAP_ENVIRO
 	// Image Base lighting using environment map
 	float smoothness = 1.0 - surface.roughness;
 	smoothness = pow(smoothness, (0.2 + surface.roughness) * 6.0);
 	vec3 Reflview = (mat3(uViewMatrixInverse)) * specRefl;
-	float v = 0.5 - 0.5 * Reflview.z;
-	float u = 0.5 - 0.5 * Reflview.y;
+	float v = 0.5 - 0.5 * abs(Reflview.z);
+	float u = 0.5 * (Reflview.y + Reflview.x);
 	// level of detail or bluriness ranging from 0 to 10 controlled by smoothness
 	float lod = 10.0 * (1.0 - smoothness);
 	vec3 ambRefl = Ka * textureLod(texture3, vec2(u, v), lod).rgb;
@@ -164,14 +164,14 @@ void main(void)
 	float Rground = (2.0 - Ka) * 0.5;
 	// horizon reflectance
 	float Rhorizon = 1.0 - abs(Ka - 1.0);
-	vec3 ambRefl = vec3(0.0) * (Rhorizon + Rground);
+	vec3 ambRefl = vec3(0.2) * (Rhorizon + Rground);
 #endif
 
 	// glass surfaces are those that have an alpha less than 1.0
 	float glassAlpha = (1.0 - surface.color.a);
 	// fresnel lighting as a result from hemisphere
 	float aNdotV = max(dot(V, surface.normal), 0.001);
-	vec3 aSpecFresnel = fresnelSchlickRX(aNdotV, surface.specular, 0.5);
+	vec3 aSpecFresnel = fresnelSchlickRX(aNdotV, surface.specular, surface.roughness);
 	vec3 hemiSpecFresnel = ambRefl * aSpecFresnel * (1.0 + min(30.0 * glassAlpha, 1.0));
 	// increase alpha for specular lighting on glass but not decals
 	// decals have alpha of 0 for non colored areas
@@ -186,8 +186,8 @@ void main(void)
 #ifdef MAP_ENVIRO
 	// Image Based diffuse lighting using environment map
 	Reflview = (mat3(uViewMatrixInverse)) * surface.normal;
-	v = 0.5 - 0.5 * Reflview.z;
-	u = 0.5 - 0.5 * Reflview.y;
+	v = 0.5 - 0.5 * abs(Reflview.z);
+	u = 0.5 * Reflview.y + 0.5 * Reflview.x;
 	// use a high lod so image is blurred to simulate diffuse
 	diffuse = 0.25 * Ka * (ambient + textureLod(texture3, vec2(u, v), 6).rgb);
 #else
@@ -195,8 +195,8 @@ void main(void)
 #endif
 
 	// metal effect for hemi diffuse
-	diffuse *= (1.0 - surface.metallic);
 	diffuse += ambRefl;
+	diffuse *= (1.0 - surface.metallic);
 	
 #endif
 
@@ -242,7 +242,7 @@ void main(void)
 	final_color += ambRefl;
 	final_color += hemiSpecFresnel;
 	// gamma correction
-	//final_color *= 2.5 / PI;
+	final_color *= 2.5 / PI;
 #endif
 	// emmission
 #ifdef USE_PBR
